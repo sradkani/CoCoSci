@@ -13,6 +13,7 @@ for i = 2:length(sequence)
     % normalize by maxRandomX
     maxRandomX = findMaxRandomX(alphabet, length(sequence(1:i)), maxMotifLength, delta, alpha);
     curve(i-1) = curve(i-1)./maxRandomX;
+
 end
 
 
