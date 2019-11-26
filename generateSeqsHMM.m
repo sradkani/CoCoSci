@@ -1,10 +1,7 @@
 function [sequences, states, deltas, alphas] =...
-    generateSeqsHMM(sizeAlphabet, maxMotifLength, seqLength, numSeqs)
+    generateSeqsHMM(alphabet, maxMotifLength, seqLength, numSeqs)
 
 %% generate motifs
-
-% initialize alphabet
-alphabet = 1:sizeAlphabet;
 
 motifs = generateMotifs(alphabet, maxMotifLength);
 

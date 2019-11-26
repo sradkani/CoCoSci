@@ -1,8 +1,10 @@
-function [random_X] = findRandomness(sizeAlphabet, maxMotifLength, sequences, delta, alpha)
+function [random_X] = findRandomness(alphabet, maxMotifLength, sequences, delta, alpha)
 
 % this function computes random(seq) for sequences in rows of 'sequences'
 
     %% check data integrity
+    
+    sizeAlphabet = length(alphabet);
     
     % number of unique values in each sequence
     numUniq = cellfun(@(c) length(unique(c)), num2cell(sequences, 2));
@@ -15,9 +17,6 @@ function [random_X] = findRandomness(sizeAlphabet, maxMotifLength, sequences, de
     end
 
     %% generate motifs
-
-    % initialize alphabet
-    alphabet = 1:sizeAlphabet;
 
     motifs = generateMotifs(alphabet, maxMotifLength);
     
