@@ -27,7 +27,6 @@ function [random_X] = findRandomness(sizeAlphabet, maxMotifLength, sequences, de
     % number of states (multiply dimensions along columns and sum)
     numStates = sum(prod(motifSizes, 2));
     
-     
 
 %% generate emissions
     

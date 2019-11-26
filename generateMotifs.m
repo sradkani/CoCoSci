@@ -1,4 +1,5 @@
 function motifs = generateMotifs(alphabet, maxMotifLength)    
+
 % preallocate motif cell
     motifs = cell(1, maxMotifLength);
 
