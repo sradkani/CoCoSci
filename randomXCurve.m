@@ -12,3 +12,4 @@ for i = 2:length(sequence)
 end
 
 % --- normalize curve by maxRandomX ----
+
