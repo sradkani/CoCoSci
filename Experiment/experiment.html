@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>My experiment</title>
+        <script src="jspsych-6.1.0/jspsych.js"></script>
+        <script src="jspsych-6.1.0/plugins/jspsych-html-keyboard-response.js"></script>
+        <script src="jspsych-6.1.0/plugins/jspsych-image-keyboard-response.js"></script>
+        <link href="jspsych-6.1.0/css/jspsych.css" rel="stylesheet" type="text/css"></link>
+    </head>
+    <body></body>
+    <script>
+
+    var timeline = [];
+    var welcome = {
+      type: "html-keyboard-response",
+      stimulus: "<p>Hi! Thanks so much for participating in our experiment! </p>" +
+      "<p>Press any key to continue</p>"
+    };
+    timeline.push(welcome);
+
+      /* define instructions trial */
+      var instructions = {
+        type: "html-keyboard-response",
+        stimulus: "<p>This session will last for 15min.</p>" +
+            "<p> In each trial, you will see some symbols appearing one-by-one </p>" +
+            "<p> and you will be asked to stop the sequence whenever you can answer" +
+            " some questions (more on this later). </p>" +
+            "<p> Each sequence is independent from one another. </p>" +
+            "<p> You will be paid extra based on the overall number of correct " +
+            "responses you give. </p>" +
+            "<p> <br /> Let’s try this on some examples before we move on to " +
+            "the actual experiment: </p>",
+
+        post_trial_gap: 2000
+      };
+      timeline.push(instructions);
+
+      /* define symbol 1 trial */
+      var symbol1Trial = {
+        type: 'image-keyboard-response',
+        stimulus: 'symbol1.png',
+        choices: ['f']
+      };
+
+      /* define symbol 2 trial */
+      var symbol2Trial = {
+        type: 'image-keyboard-response',
+        stimulus: 'symbol2.png',
+        choices: ['f']
+      };
+
+      /* define symbol 2 trial */
+      var symbol3Trial = {
+        type: 'image-keyboard-response',
+        stimulus: 'symbol3.png',
+        choices: ['f']
+      }
+
+    timeline.push(symbol1Trial, symbol2Trial, symbol3Trial);
+
+    /* start the experiment */
+    jsPsych.init({
+      timeline: timeline
+    });
+
+    </script>
+</html>
