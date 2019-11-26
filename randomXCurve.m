@@ -10,3 +10,5 @@ curve = nan(1, length(sequence)-1);
 for i = 2:length(sequence)
     curve(i-1) = findRandomness(sizeAlphabet, maxMotifLength, sequence(1:i), delta, alpha);
 end
+
+% --- normalize curve by maxRandomX ----
