@@ -36,27 +36,34 @@
       timeline.push(instructions);
 
       /* define symbol 1 trial */
-      var symbol1Trial = {
-        type: 'image-keyboard-response',
-        stimulus: 'symbol1.png',
-        choices: ['f']
-      };
+      var test_stimuli = [
+        {stimulus: 'symbol1.png'},
+        {stimulus: 'symbol2.png'},
+        {stimulus: 'symbol3.png'},
+      ];
 
-      /* define symbol 2 trial */
-      var symbol2Trial = {
-        type: 'image-keyboard-response',
-        stimulus: 'symbol2.png',
-        choices: ['f']
-      };
-
-      /* define symbol 2 trial */
-      var symbol3Trial = {
-        type: 'image-keyboard-response',
-        stimulus: 'symbol3.png',
-        choices: ['f']
+      var blank = {
+        type: 'html-keyboard-response',
+        stimulus: '<p> </p>',
+        choices: jsPsych.NO_KEYS,
+        trial_duration: 1000,
       }
 
-    timeline.push(symbol1Trial, symbol2Trial, symbol3Trial);
+       var test = {
+         type: "image-keyboard-response",
+         stimulus: jsPsych.timelineVariable('stimulus'),
+         trial_duration: 1000,
+         choices: ['f', 'j']
+       }
+
+       var test_procedure = {
+         timeline: [blank, test],
+         timeline_variables: test_stimuli,
+         randomize_order: true,
+         repetitions: 5
+       }
+
+       timeline.push(test_procedure);
 
     /* start the experiment */
     jsPsych.init({
