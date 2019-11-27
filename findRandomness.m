@@ -37,10 +37,14 @@ function [random_X] = findRandomness(alphabet, maxMotifLength, sequences, delta,
     
     
 %% generate transition matrix
-    
-    % =============================== this should be modified
-    C = (1-delta) / (2 * (alpha + alpha^2));   
-    
+    % compute denominator for C (sum over number of motifs times alpha^length)
+    denom = arrayfun(@(x, y) x .* alphas.^y,...
+        motifSizes(:,2).', 1:length(motifs), 'UniformOutput', false);
+
+    % (1-deltas)/ 
+    % (3 .* alpha.^1 + 6 * alpha.^2 + ... + numOfMaxLengthMotifs * alpha^maxMotifLength)
+    C = (1-deltas) ./ sum(cell2mat(denom'), 1);
+
     
     transitionMat = generateTransitionMat(...
         motifs, motifSizes, numStates, maxMotifLength, alpha, delta, C);

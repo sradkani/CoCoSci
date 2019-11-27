@@ -15,7 +15,14 @@ numStates = sum(prod(motifSizes, 2));
 %% set parameters for sequence generation sequences with different parameter settings
 % (delta = staying in motif, alpha = prior over motifs);
 deltas = rand(1,numSeqs); alphas = rand(1, numSeqs);
-C = (1-deltas) ./ (2.* (alphas + alphas.^2));
+
+% compute denominator for C (sum over number of motifs times alpha^length)
+denom = arrayfun(@(x, y) x .* alphas.^y,...
+    motifSizes(:,2).', 1:length(motifs), 'UniformOutput', false);
+
+% (1-deltas)/ 
+% (3 .* alpha.^1 + 6 * alpha.^2 + ... + numOfMaxLengthMotifs * alpha^maxMotifLength)
+C = (1-deltas) ./ sum(cell2mat(denom'), 1);
 
 % emissions are deterministic
 emissions = eye(numStates);
