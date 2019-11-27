@@ -52,9 +52,9 @@ for seq = 1:numSeqs
     
 end
 
-csvwrite('states.csv', states)
+%csvwrite('states.csv', states)
 csvwrite('sequences.csv', sequences)
-csvwrite('deltas.csv', deltas)
-csvwrite('alphas.csv', alphas)
+%csvwrite('deltas.csv', deltas)
+%csvwrite('alphas.csv', alphas)
 
 end

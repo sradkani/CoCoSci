@@ -10,10 +10,10 @@ alpha = 0.1;
 
 %% Find randomness curve for each sequence
 numSeq = size(sequences, 1);  seqLength = size(sequences, 2);
-randomXs = nan(numSeq, seqLength);
+randomXs = nan(numSeq, seqLength-1);
 
 for i=1:numSeq
-    randomXs(i,:) = randomXCurve(alphabet, maxMotifLength, sequences(i), delta, alpha);
+    randomXs(i,:) = randomXCurve(alphabet, maxMotifLength, sequences(i,:), delta, alpha);
 end
 
 %% Save randomness curves
