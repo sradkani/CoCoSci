@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html>
     <head>
@@ -9,6 +10,26 @@
     </head>
     <body></body>
     <script>
+
+    /* TODO:
+    EXPERIMENT LEVEL:
+    - code training trials
+    - write wrapper (or reorganize) to show several sequences
+    - check how to get desired output:
+      - which sequences were shown
+      - when each sequence was stopped
+      - responses to questions
+
+    SEQUENCE LEVEL:
+    - present test trials in order specified by a loaded sequence
+
+    TRIAL LEVEL:
+    - put timer / time limit during questions
+    - implement self-termination of sequence
+    - adjust choices
+     */
+
+
 
     var timeline = [];
     var welcome = {
@@ -35,32 +56,76 @@
       };
       timeline.push(instructions);
 
-      /* define symbol 1 trial */
-      var symbol1Trial = {
-        type: 'image-keyboard-response',
-        stimulus: 'symbol1.png',
-        choices: ['f']
-      };
+      /* define symbol trials */
+      var test_stimuli = [
+        /* stimulus = which image to load, data = marker to distinguish from blank episodes */
+        {stimulus: 'symbol1.png', data: {test_part: 'test'}},
+        {stimulus: 'symbol2.png', data: {test_part: 'test'}},
+        {stimulus: 'symbol3.png', data: {test_part: 'test'}},
+      ];
 
-      /* define symbol 2 trial */
-      var symbol2Trial = {
-        type: 'image-keyboard-response',
-        stimulus: 'symbol2.png',
-        choices: ['f']
-      };
-
-      /* define symbol 2 trial */
-      var symbol3Trial = {
-        type: 'image-keyboard-response',
-        stimulus: 'symbol3.png',
-        choices: ['f']
+      /* blank period between trials */
+      var blank = {
+        type: 'html-keyboard-response',
+        stimulus: '<p> </p>',
+        choices: jsPsych.NO_KEYS,
+        trial_duration: 1000,
+        data: {test_part: 'blank'}
       }
 
-    timeline.push(symbol1Trial, symbol2Trial, symbol3Trial);
+      /* sample from test_stimuli */
+       var symbol = {
+         type: "image-keyboard-response",
+         stimulus: jsPsych.timelineVariable('stimulus'),
+         choices: ['f', 'j']
+       }
+
+       /* define sequence procedure */
+       var sequence = {
+         timeline: [blank, symbol],
+         timeline_variables: test_stimuli,
+         /* randomize_order: true,
+         repetitions: 5 */
+       }
+
+       timeline.push(sequence);
+
+       /* ask subjects about predictability of sequence */
+       var slider = {
+         type: 'html-keyboard-response',
+         stimulus: '<p> Rate this sequence from very random (1) to very predictable (4) </p>' +
+         ' <br /> INSERT SLIDER ',
+         choices: ['1', '2', '3', '4']
+
+         /* put some constraints on how quickly subjects can move through this part, e.g.
+         trial_duration: 10000, */
+       }
+
+       /* ask subjects to rank which symbol is most likely to follow */
+       var ranking = {
+         type: 'html-keyboard-response',
+         stimulus: '<p> Rank the symbols by which you think would have come next </p>' +
+         '<p> (INSERT SYMBOL NAMES) </p>' +
+         ' <br /> INSERT RANKING INTERFACE ',
+         choices: ['1', '2', '3']
+
+         /* put some constraints on how quickly subjects can move through this part, e.g.
+         trial_duration: 10000, */
+       }
+
+       /* define questionnaire procedure */
+       var questionnaire = {
+         timeline: [slider, ranking] /* randomize_order: true,
+         repetitions: 5 */
+       }
+       timeline.push(questionnaire);
 
     /* start the experiment */
     jsPsych.init({
-      timeline: timeline
+      timeline: timeline,
+      on_finish: function() {
+    jsPsych.data.displayData();
+    }
     });
 
     </script>
