@@ -45,6 +45,7 @@ function [random_X] = findRandomness(alphabet, maxMotifLength, sequences, delta,
     % (3 .* alpha.^1 + 6 * alpha.^2 + ... + numOfMaxLengthMotifs * alpha^maxMotifLength)
     C = (1-delta) ./ sum(cell2mat(denom'), 1);
 
+    % C2 = (1-delta) / (2.*(alpha + alpha.^2));
     
     transitionMat = generateTransitionMat(...
         motifs, motifSizes, numStates, maxMotifLength, alpha, delta, C);
