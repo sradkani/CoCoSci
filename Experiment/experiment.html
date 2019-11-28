@@ -6,7 +6,10 @@
         <script src="jspsych-6.1.0/jspsych.js"></script>
         <script src="jspsych-6.1.0/plugins/jspsych-html-keyboard-response.js"></script>
         <script src="jspsych-6.1.0/plugins/jspsych-image-keyboard-response.js"></script>
+        <script src="jspsych-6.1.0/plugins/jspsych-survey-likert.js"></script>
         <link href="jspsych-6.1.0/css/jspsych.css" rel="stylesheet" type="text/css"></link>
+        <link href="jspsych-6.1.0/css/jquery-ui.css" rel="stylesheet" type="text/css"></link>
+
     </head>
     <body></body>
     <script>
@@ -29,7 +32,7 @@
 
     TRIAL LEVEL:
     - put timer / time limit during questions
-    - adjust choices (spacebar for termination?)
+    - think about stimuli (colors are hard, maybe alphabet) / different locations ?
      */
 
 
@@ -42,7 +45,7 @@
     };
     timeline.push(welcome);
 
-      /* define instructions trial */
+      // define instructions trial
       var instructions = {
         type: "html-keyboard-response",
         stimulus: "<p>This session will last for 15min.</p>" +
@@ -55,37 +58,55 @@
             "<p> <br /> Let’s try this on some examples before we move on to " +
             "the actual experiment: </p>",
 
-        post_trial_gap: 2000
+        post_trial_gap: 1000
       };
       timeline.push(instructions);
 
-      /* define symbol trials */
+      // define symbol trials
       var test_stimuli = [
-        /* stimulus = which image to load, data = marker to distinguish from blank episodes */
+        // stimulus = which image to load, data = marker to distinguish from blank episodes
+        {stimulus: 'symbol1.png', data: {test_part: 'test'}},
+        {stimulus: 'symbol2.png', data: {test_part: 'test', keypress: 2}}, //jsPsych.data.get().last(1)
+        {stimulus: 'symbol3.png', data: {test_part: 'test'}},
         {stimulus: 'symbol1.png', data: {test_part: 'test'}},
         {stimulus: 'symbol2.png', data: {test_part: 'test'}},
-        {stimulus: 'symbol3.png', data: {test_part: 'test'}},
+        {stimulus: 'symbol3.png', data: {test_part: 'test'}}
+
       ];
 
-      /* blank period between trials */
+
+      /*/ blank period between trials
       var blank = {
         type: 'html-keyboard-response',
         stimulus: '<p> </p>',
         choices: jsPsych.NO_KEYS,
         trial_duration: 1000,
         data: {test_part: 'blank'}
-      }
+      } */
 
-      /* sample from test_stimuli */
+      // sample from test_stimuli
        var symbol = {
          type: "image-keyboard-response",
          stimulus: jsPsych.timelineVariable('stimulus'),
-         choices: ['f', 'j']
+         choices: jsPsych.ALL_KEYS,
+         trial_duration: 1000,
+         post_trial_gap: 500,
+         data: jsPsych.timelineVariable('data'),
+         on_start: function(symbol){
+
+          var spacePressed = jsPsych.data.get().last(1).values()[0].key_press
+         if(spacePressed == 32) {
+           symbol.stimulus = 'white.png';
+           symbol.trial_duration = 0;
+           symbol.post_trial_gap = 0;
+           jsPsych.endCurrentTimeline()
+         }
        }
+     }
 
        /* define sequence procedure */
        var sequence = {
-         timeline: [blank, symbol],
+         timeline: [symbol],
          timeline_variables: test_stimuli,
          /* randomize_order: true,
          repetitions: 5 */
@@ -93,18 +114,24 @@
 
        timeline.push(sequence);
 
-       /* ask subjects about predictability of sequence */
-       var slider = {
-         type: 'html-keyboard-response',
-         stimulus: '<p> Rate this sequence from very random (1) to very predictable (4) </p>' +
+       var scale_1 =
+          ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10"];
+
+        var likert_page = {
+          type: 'survey-likert',
+          questions: [
+            {prompt: "Rate the sequence you just saw from completely random (1) to completely predictable (10).", labels: scale_1}
+          ]
+        };
+
+         /*stimulus: '<p> Rate this sequence from very random (1) to very predictable (4) </p>' +
          ' <br /> INSERT SLIDER ',
          choices: ['1', '2', '3', '4']
 
-         /* put some constraints on how quickly subjects can move through this part, e.g.
+         put some constraints on how quickly subjects can move through this part, e.g.
          trial_duration: 10000, */
-       }
 
-       /* ask subjects to rank which symbol is most likely to follow */
+       /// ask subjects to rank which symbol is most likely to follow
        var ranking = {
          type: 'html-keyboard-response',
          stimulus: '<p> Rank the symbols by which you think would have come next </p>' +
@@ -118,7 +145,7 @@
 
        /* define questionnaire procedure */
        var questionnaire = {
-         timeline: [slider, ranking] /* randomize_order: true,
+         timeline: [likert_page, ranking] /* randomize_order: true,
          repetitions: 5 */
        }
        timeline.push(questionnaire);
@@ -127,6 +154,8 @@
     jsPsych.init({
       timeline: timeline,
       on_finish: function() {
+
+    // jsPsych.data.get().localSave('csv', 'expdata.csv');  //Save the data locally in a .csv file
     jsPsych.data.displayData();
     }
     });
