@@ -44,7 +44,6 @@ function [random_X] = findRandomness(alphabet, maxMotifLength, sequences, delta,
     % (1-delta)/ 
     % (3 .* alpha.^1 + 6 * alpha.^2 + ... + numOfMaxLengthMotifs * alpha^maxMotifLength)
     C = (1-delta) ./ sum(cell2mat(denom'), 1);
-%     C = (1-delta) / (2*(alpha + alpha^2));
     
     transitionMat = generateTransitionMat(...
         motifs, motifSizes, numStates, maxMotifLength, alpha, delta, C);
@@ -60,8 +59,8 @@ function [random_X] = findRandomness(alphabet, maxMotifLength, sequences, delta,
         States = States - 1;
         % find P(X|regular)
         idx = buffer(States, 2, 1, 'nodelay');
-        P_X_regular = prior(States(1));
-        P_X_regular = P_X_regular * prod( transitionMat(sub2ind(size(transitionMat), idx(1,:), idx(2,:))), 2);
+        P_X_regular = prior(States(1)) *...
+            prod( transitionMat(sub2ind(size(transitionMat), idx(1,:), idx(2,:))), 2);
         
         % the base of logarithm scales the randomness measure
         % for now use natural logarithm
