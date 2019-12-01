@@ -1,0 +1,138 @@
+
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>My experiment</title>
+        <script src="jspsych-6.1.0/jspsych.js"></script>
+        <script src="jspsych-6.1.0/plugins/jspsych-html-keyboard-response.js"></script>
+        <script src="jspsych-6.1.0/plugins/jspsych-image-keyboard-response.js"></script>
+        <script src="jspsych-6.1.0/plugins/jspsych-survey-likert.js"></script>
+        <script src="jspsych-6.1.0/plugins/jspsych-free-sort.js"></script>
+        <link href="jspsych-6.1.0/css/jspsych.css" rel="stylesheet" type="text/css"></link>
+        <link href="jspsych-6.1.0/css/jquery-ui.css" rel="stylesheet" type="text/css"></link>
+        <script src="PapaParse-5.0.2/papaparse.min.js"></script>
+        <script src="https://d3js.org/d3-dsv.v1.min.js"></script>
+        <script src="https://d3js.org/d3-fetch.v1.min.js"></script>
+
+
+    </head>
+    <body></body>
+    <script>
+
+    d3.csv("sequences.csv").then(function(data) {
+      console.log(data); // [{"Hello": "world"}, …]
+    });
+
+    /* TODO:
+    MTURK Integration:
+    - write wrapper in psiturk to integrate with MTURK
+
+    EXPERIMENT LEVEL:
+    - code training trials
+    - write wrapper (or reorganize) to show several sequences
+
+    SEQUENCE LEVEL:
+    - present test trials in order specified by a loaded sequence
+    - implement self-termination of sequence
+    - make sure spacebar is always recorded to terminate the sequence
+    - check how to get desired output:
+      - which sequences were shown
+      - when each sequence was stopped
+      - responses to questions
+
+    TRIAL LEVEL:
+    - put timer / time limit during questions
+    - think about stimuli (colors are hard, maybe alphabet) / different locations ?
+     */
+
+
+
+    var timeline = [];
+    var welcome = {
+      type: "html-keyboard-response",
+      stimulus: "<p>Hi! Thanks so much for participating in our experiment! </p>" +
+      "<p>Press any key to continue</p>"
+    };
+    timeline.push(welcome);
+
+      // define instructions trial
+      var instructions = {
+        type: "html-keyboard-response",
+        stimulus: "<p>This session will last for 10min.</p>" +
+            "<p> In each trial, you will see a sequence of letters </p>" +
+            "<p> and you will be asked to stop the sequence whenever you can answer" +
+            " some questions (more on this later). </p>" +
+            "<p> Each sequence is independent from one another. </p>" +
+            "<p> You will be paid extra based on the overall number of correct " +
+            "responses you give. </p>" +
+            "<p> <br /> Let’s try this on some examples before we move on to " +
+            "the actual experiment: </p>",
+
+        post_trial_gap: 1000
+      };
+      timeline.push(instructions);
+
+      // define symbol trials
+      var test_stimuli = [
+        // the easiest way to do this might be to find a program that will
+        // convert your file into a JSON-string, which you can the read into JavaScript with JSON.parse().
+        {stimulus: '<div style="font-size:25px;"> A A A A A A A A A A A A A A </div>', data: {test_part: 'test'}},
+        {stimulus: '<div style="font-size:25px;"> A B A B A B A B A B A B A B </div>', data: {test_part: 'test'}}, //jsPsych.data.get().last(1)
+        {stimulus: '<div style="font-size:25px;">  A B C A B C A B C A B C A B C </div>', data: {test_part: 'test'}},
+        {stimulus: '<div style="font-size:25px;"> A B C A B A C A B C C A B C A A B </div>', data: {test_part: 'test'}},
+        {stimulus: '<div style="font-size:25px;"> A C A B C C A C B B A C A A B C </div>', data: {test_part: 'test'}},
+        {stimulus: '<div style="font-size:25px;">  C C A A B B C C A A B B C C A A B B </div>', data: {test_part: 'test'}}
+
+      ];
+
+
+      /*/ blank period between trials
+      var blank = {
+        type: 'html-keyboard-response',
+        stimulus: '<p> </p>',
+        choices: jsPsych.NO_KEYS,
+        trial_duration: 1000,
+        data: {test_part: 'blank'}
+      } */
+
+      // sample from test_stimuli
+       var symbol = {
+         type: "html-keyboard-response",
+         stimulus: jsPsych.timelineVariable('stimulus'),
+         choices: jsPsych.ALL_KEYS,
+         post_trial_gap: 500,
+         data: jsPsych.timelineVariable('data'),
+       }
+
+     var scale_1 = ["1", "2"];
+
+      var rating = {
+        type: 'survey-likert',
+        questions: [
+          {prompt: "Rate the sequence you just saw from completely random (1) to completely predictable (10).", labels: scale_1}
+        ]
+      };
+
+       /* define sequence procedure */
+       var sequence = {
+         timeline: [symbol, rating],
+         timeline_variables: test_stimuli,
+         /* randomize_order: true,
+         repetitions: 5 */
+       }
+
+       timeline.push(sequence);
+
+
+    /* start the experiment */
+    jsPsych.init({
+      timeline: timeline,
+      on_finish: function() {
+
+    // jsPsych.data.get().localSave('csv', 'expdata.csv');  //Save the data locally in a .csv file
+    jsPsych.data.displayData();
+    }
+    });
+
+    </script>
+</html>
