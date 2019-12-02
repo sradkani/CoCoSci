@@ -75,7 +75,7 @@ if ischar(alphabet)
 end
 
 %csvwrite('states.csv', states)
-csvwrite('sequences.csv', sequences)
+csvwrite('Experiment/sequences.csv', sequences)
 %csvwrite('deltas.csv', deltas)
 %csvwrite('alphas.csv', alphas)
 
