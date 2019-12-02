@@ -23,20 +23,9 @@
 
     EXPERIMENT LEVEL:
     - code training trials
-    - write wrapper (or reorganize) to show several sequences
-
-    SEQUENCE LEVEL:
-    - present test trials in order specified by a loaded sequence
-    - implement self-termination of sequence
-    - make sure spacebar is always recorded to terminate the sequence
-    - check how to get desired output:
-      - which sequences were shown
-      - when each sequence was stopped
-      - responses to questions
 
     TRIAL LEVEL:
     - put timer / time limit during questions
-    - think about stimuli (colors are hard, maybe alphabet) / different locations ?
      */
 
     var timeline = [];
@@ -85,14 +74,11 @@
             sort_area_height: 300,
             prompt: "<p> What do you think the NEXT symbol in the sequence would be? </p> <p>  Sort the symbols from most likely (left) to least likely (right) by dragging and dropping them </p>" +
             '<div style="font-size:25px;"> 1 &emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp; 2 &emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp; 3 </div>',
-
-            //<font size="18">  </font>""
         };
-
 
       var data2;
       var msg = $.ajax({type: "GET",
-      url: "https://raw.githubusercontent.com/sradkani/CoCoSci/master/Experiment/sequences.csv",
+      url: "https://raw.githubusercontent.com/sradkani/CoCoSci/master/Experiment/sequencesTest.csv",
        async: false}).responseText;
 
       console.log(Papa.parse(msg))
@@ -100,14 +86,14 @@
       data2 = data2['data']
 
       var data2 = Object.values(data2);
-      console.log(Object.values(data2[0]).toString())
 
-      var test_stimuli = []
       function csvValues(){
         var arrayLength = data2.length;
 
           for (var i = 0; i < arrayLength; i++) {
-              for (var j = 0; i < data2[i].length; i++) {
+            var test_stimuli = []
+              for (var j = 0; j < data2[i].length; j++) {
+
             test_stimuli.push({stimulus: '<div style="font-size:65px;">' +
             Object.values(data2[i][j]).toString().replace(/,/g, '  ') +
             '</div>', data: {test_part: 'test'}})
@@ -136,8 +122,8 @@
          var sequence = {
            timeline: [symbol],
            timeline_variables: test_stimuli,
-           //repetitions: 5
          }
+         console.log(sequence)
 
          // define questionnaire procedure
          var questionnaire = {
@@ -154,7 +140,7 @@
       timeline: timeline,
       on_finish: function() {
 
-    jsPsych.data.get().localSave('csv', 'expdata.csv');  //Save the data locally in a .csv file
+    //jsPsych.data.get().localSave('csv', 'expdata.csv');  //Save the data locally in a .csv file
     jsPsych.data.displayData();
     }
     });
