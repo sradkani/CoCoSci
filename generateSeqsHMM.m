@@ -52,6 +52,10 @@ for seq = 1:numSeqs
     
 end
 
+if ischar(alphabet)
+    sequences = char(sequences);
+end
+
 %csvwrite('states.csv', states)
 csvwrite('sequences.csv', sequences)
 %csvwrite('deltas.csv', deltas)
