@@ -49,8 +49,8 @@ if length(seqLength) > 1
     sequences = cell(numSeqs*length(seqLength), 1);
     states = cell(numSeqs*length(seqLength), 1);
 else
-    sequences = nan(numSeqs, seqLength);
-    states = nan(numSeqs, seqLength);
+    sequences = zeros(numSeqs, seqLength);
+    states = zeros(numSeqs, seqLength);
 
 end
 
@@ -81,23 +81,31 @@ for seq = 1:numSeqs
         
     else
     
+        % remove duplicates
+        while seq < size(unique(sequences, 'rows', 'first'), 1)
+            
          % randomly sample one state between 1 and numStates with probabilities specified by prior
         startAt = randsample(numStates, 1, true, prior);
 
         [sequences(seq,:), states(seq,:)] =...
             hmmgenerate2(seqLength, transitionMat, emissions, startAt,...
             'Symbols', cell2mat(cellfun(@(x) reshape(x.', 1, []), motifs, 'UniformOutput', false)));
+       
+        disp('removed duplicate row')
+        
+        end
+        
     end
 end
 
-save('sequencesCell.mat', 'sequences')
+% save('sequencesCell.mat', 'sequences')
 
 if ischar(alphabet)
     sequences = char(sequences);
 end
 
 %csvwrite('states.csv', states)
-csvwrite('Experiment/sequences.csv', sequences)
+csvwrite('Experiment/sequencesTest.csv', sequences)
 %csvwrite('deltas.csv', deltas)
 %csvwrite('alphas.csv', alphas)
 

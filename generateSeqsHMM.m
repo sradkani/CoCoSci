@@ -77,6 +77,17 @@ for seq = 1:numSeqs
         [sequences{(seq-1)*length(seqLength) + i}, states{(seq-1)*length(seqLength) + i}] =...
             hmmgenerate2(seqLength(i), transitionMat, emissions, startAt,...
             'Symbols', cell2mat(cellfun(@(x) reshape(x.', 1, []), motifs, 'UniformOutput', false)));
+        
+         % redo if there is a duplicate
+        while (seq-1)*length(seqLength) + i >...
+                size(uniqueRowsCA(sequences(1:(seq-1)*length(seqLength) + i), 'rows'),1)
+            
+        [sequences{(seq-1)*length(seqLength) + i}, states{(seq-1)*length(seqLength) + i}] =...
+            hmmgenerate2(seqLength(i), transitionMat, emissions, startAt,...
+            'Symbols', cell2mat(cellfun(@(x) reshape(x.', 1, []), motifs, 'UniformOutput', false)));
+        
+         % disp('replaced a duplicate')
+        end
         end
         
     else
@@ -87,10 +98,21 @@ for seq = 1:numSeqs
         [sequences(seq,:), states(seq,:)] =...
             hmmgenerate2(seqLength, transitionMat, emissions, startAt,...
             'Symbols', cell2mat(cellfun(@(x) reshape(x.', 1, []), motifs, 'UniformOutput', false)));
+        
+        % redo if there is a duplicate
+        while seq > size(unique(sequences(1:seq, :), 'rows'),1)
+             [sequences(seq,:), states(seq,:)] =...
+            hmmgenerate2(seqLength, transitionMat, emissions, startAt,...
+            'Symbols', cell2mat(cellfun(@(x) reshape(x.', 1, []), motifs, 'UniformOutput', false)));
+        
+         % disp('replaced a duplicate')
+        end
+        
     end
 end
 
-% save('sequencesCell.mat', 'sequences')
+% remove duplicate values
+
 
 if ischar(alphabet)
     sequences = char(sequences);
