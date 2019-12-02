@@ -64,6 +64,32 @@
       };
       timeline.push(instructions);
 
+      var scale_1 =
+         ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10"];
+
+       var likert_page = {
+         type: 'survey-likert',
+         questions: [
+           {prompt: "Rate the sequence you just saw from completely random (1) to completely predictable (10).", labels: scale_1}
+         ]
+       };
+
+        var sorting_stimuli = [];
+        for (var i = 1; i <= 3; i++) {
+            sorting_stimuli.push("symbol" + i + ".png");
+        }
+
+        var sort_trial = {
+            type: 'free-sort',
+            stimuli: sorting_stimuli,
+            sort_area_height: 300,
+            prompt: "<p> What do you think the NEXT symbol in the sequence would be? </p> <p>  Sort the symbols from most likely (left) to least likely (right) by dragging and dropping them </p>" +
+            '<div style="font-size:25px;"> 1 &emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp; 2 &emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp; 3 </div>',
+
+            //<font size="18">  </font>""
+        };
+
+
       var data2;
       var msg = $.ajax({type: "GET",
       url: "https://raw.githubusercontent.com/sradkani/CoCoSci/master/Experiment/sequences.csv",
@@ -87,87 +113,41 @@
             '</div>', data: {test_part: 'test'}})
         }
 
+        // sample from test_stimuli
+         var symbol = {
+           type: "html-keyboard-response",
+           stimulus: jsPsych.timelineVariable('stimulus'),
+           choices: jsPsych.ALL_KEYS,
+           trial_duration: 1000,
+           post_trial_gap: 500,
+           data: jsPsych.timelineVariable('data'),
+           on_start: function(symbol){
+             var spacePressed = jsPsych.data.get().last(1).values()[0].key_press
+           if(spacePressed == 32) {
+             symbol.stimulus = "";
+             symbol.trial_duration = 0;
+             symbol.post_trial_gap = 0;
+             jsPsych.endCurrentTimeline()
+           }
+         }
+       }
 
+         /* define sequence procedure */
+         var sequence = {
+           timeline: [symbol],
+           timeline_variables: test_stimuli,
+           //repetitions: 5
+         }
+
+         // define questionnaire procedure
+         var questionnaire = {
+           timeline: [sequence, likert_page, sort_trial], //
+         }
+         timeline.push(questionnaire);
 
       }
     }
     csvValues()
-
-      /*/ blank period between trials
-      var blank = {
-        type: 'html-keyboard-response',
-        stimulus: '<p> </p>',
-        choices: jsPsych.NO_KEYS,
-        trial_duration: 1000,
-        data: {test_part: 'blank'}
-      } */
-
-      // sample from test_stimuli
-       var symbol = {
-         type: "html-keyboard-response",
-         stimulus: jsPsych.timelineVariable('stimulus'),
-         choices: jsPsych.ALL_KEYS,
-         trial_duration: 1000,
-         post_trial_gap: 500,
-         data: jsPsych.timelineVariable('data'),
-         on_start: function(symbol){
-           var spacePressed = jsPsych.data.get().last(1).values()[0].key_press
-         if(spacePressed == 32) {
-           symbol.stimulus = "";
-           symbol.trial_duration = 0;
-           symbol.post_trial_gap = 0;
-           jsPsych.endCurrentTimeline()
-         }
-       }
-     }
-
-       /* define sequence procedure */
-       var sequence = {
-         timeline: [symbol],
-         timeline_variables: test_stimuli,
-         //repetitions: 5
-       }
-
-       var scale_1 =
-          ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10"];
-
-        var likert_page = {
-          type: 'survey-likert',
-          questions: [
-            {prompt: "Rate the sequence you just saw from completely random (1) to completely predictable (10).", labels: scale_1}
-          ]
-        };
-
-         /*stimulus: '<p> Rate this sequence from very random (1) to very predictable (4) </p>' +
-         ' <br /> INSERT SLIDER ',
-         choices: ['1', '2', '3', '4']
-
-         put some constraints on how quickly subjects can move through this part, e.g.
-         trial_duration: 10000, */
-
-         var sorting_stimuli = [];
-         for (var i = 1; i <= 3; i++) {
-             sorting_stimuli.push("symbol" + i + ".png");
-         }
-
-         var sort_trial = {
-             type: 'free-sort',
-             stimuli: sorting_stimuli,
-             sort_area_height: 300,
-             prompt: "<p> What do you think the NEXT symbol in the sequence would be? </p> <p>  Sort the symbols from most likely (left) to least likely (right) by dragging and dropping them </p>" +
-             '<div style="font-size:25px;"> 1 &emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp; 2 &emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp; 3 </div>',
-
-             //<font size="18">  </font>""
-         };
-         /* put some constraints on how quickly subjects can move through this part, e.g.
-         trial_duration: 10000, */
-
-       /* define questionnaire procedure */
-       var questionnaire = {
-         timeline: [sequence, likert_page, sort_trial], // randomize_order: true,
-         repetitions: 5, // change for exp
-       }
-       timeline.push(questionnaire);
 
     /* start the experiment */
     jsPsych.init({
