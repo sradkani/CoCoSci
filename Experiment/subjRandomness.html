@@ -16,36 +16,9 @@
         <script src="https://requirejs.org/docs/release/2.3.6/minified/require.js"></script>
         <script src="https://code.jquery.com/jquery-3.4.1.min.js" type="text/javascript"></script>
 
-
-
-
     </head>
     <body></body>
     <script>
-
-    /* TODO:
-    MTURK Integration:
-    - write wrapper in psiturk to integrate with MTURK
-
-    EXPERIMENT LEVEL:
-    - code training trials
-    - write wrapper (or reorganize) to show several sequences
-
-    SEQUENCE LEVEL:
-    - present test trials in order specified by a loaded sequence
-    - implement self-termination of sequence
-    - make sure spacebar is always recorded to terminate the sequence
-    - check how to get desired output:
-      - which sequences were shown
-      - when each sequence was stopped
-      - responses to questions
-
-    TRIAL LEVEL:
-    - put timer / time limit during questions
-    - think about stimuli (colors are hard, maybe alphabet) / different locations ?
-     */
-
-
 
     var timeline = [];
     var welcome = {
@@ -59,22 +32,18 @@
       var instructions = {
         type: "html-keyboard-response",
         stimulus: "<p>This session will last for 10min.</p>" +
-            "<p> In each trial, you will see a sequence of letters </p>" +
-            "<p> and you will be asked to stop the sequence whenever you can answer" +
-            " some questions (more on this later). </p>" +
-            "<p> Each sequence is independent from one another. </p>" +
-            "<p> You will be paid extra based on the overall number of correct " +
-            "responses you give. </p>" +
-            "<p> <br /> Let’s try this on some examples before we move on to " +
-            "the actual experiment: </p>",
+            "<p> In each trial, you will see a sequence of letters. </p>" +
+            "<p> After seeing the sequence, press any key, </p> <p> and you will be asked" +
+             " to rate how random or predictable you find the </p>" +
+            "<p> sequence on a scale from 1 to 10. </p>" +
+            "<p> Each sequence is independent from one another. </p>",
 
         post_trial_gap: 1000
       };
       timeline.push(instructions);
 
 
-
-
+// get data from github file
       var data2;
       var msg = $.ajax({type: "GET",
       url: "https://raw.githubusercontent.com/sradkani/CoCoSci/master/Experiment/sequences.csv",
@@ -99,32 +68,6 @@
       }
 
       csvValues();
-
-
-
-
-      // // define symbol trials
-      // var test_stimuli = [
-      //   // the easiest way to do this might be to find a program that will
-      //   // convert your file into a JSON-string, which you can the read into JavaScript with JSON.parse().
-      //   {stimulus: '<div style="font-size:25px;"> A A A A A A A A A A A A A A </div>', data: {test_part: 'test'}},
-      //   {stimulus: '<div style="font-size:25px;"> A B A B A B A B A B A B A B </div>', data: {test_part: 'test'}}, //jsPsych.data.get().last(1)
-      //   {stimulus: '<div style="font-size:25px;">  A B C A B C A B C A B C A B C </div>', data: {test_part: 'test'}},
-      //   {stimulus: '<div style="font-size:25px;"> A B C A B A C A B C C A B C A A B </div>', data: {test_part: 'test'}},
-      //   {stimulus: '<div style="font-size:25px;"> A C A B C C A C B B A C A A B C </div>', data: {test_part: 'test'}},
-      //   {stimulus: '<div style="font-size:25px;">  C C A A B B C C A A B B C C A A B B </div>', data: {test_part: 'test'}}
-
-      // ];
-
-
-      /*/ blank period between trials
-      var blank = {
-        type: 'html-keyboard-response',
-        stimulus: '<p> </p>',
-        choices: jsPsych.NO_KEYS,
-        trial_duration: 1000,
-        data: {test_part: 'blank'}
-      } */
 
       // sample from test_stimuli
        var symbol = {
