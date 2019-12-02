@@ -90,6 +90,8 @@ for seq = 1:numSeqs
     end
 end
 
+save('Experiment/sequencesCell.mat', sequences)
+
 if ischar(alphabet)
     sequences = char(sequences);
 end

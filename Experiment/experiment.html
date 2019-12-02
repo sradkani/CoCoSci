@@ -87,6 +87,8 @@
             '</div>', data: {test_part: 'test'}})
         }
 
+
+
       }
     }
     csvValues()
@@ -123,7 +125,6 @@
        var sequence = {
          timeline: [symbol],
          timeline_variables: test_stimuli,
-         randomize_order: true,
          //repetitions: 5
        }
 
@@ -144,15 +145,6 @@
          put some constraints on how quickly subjects can move through this part, e.g.
          trial_duration: 10000, */
 
-       /// ask subjects to rank which symbol is most likely to follow
-       var ranking = {
-         type: 'free-sort',
-         stimulus: '<p> Rank the symbols by which you think would have come next </p>' +
-         '<p> (INSERT SYMBOL NAMES) </p>' +
-         ' <br /> INSERT RANKING INTERFACE ',
-         choices: ['1', '2', '3']
-       }
-
          var sorting_stimuli = [];
          for (var i = 1; i <= 3; i++) {
              sorting_stimuli.push("symbol" + i + ".png");
@@ -162,7 +154,7 @@
              type: 'free-sort',
              stimuli: sorting_stimuli,
              sort_area_height: 300,
-             prompt: "<p> Sort the symbols from most likely (left) to least likely (right) by dragging and dropping them </p>" +
+             prompt: "<p> What do you think the NEXT symbol in the sequence would be? </p> <p>  Sort the symbols from most likely (left) to least likely (right) by dragging and dropping them </p>" +
              '<div style="font-size:25px;"> 1 &emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp; 2 &emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp; 3 </div>',
 
              //<font size="18">  </font>""
@@ -182,7 +174,7 @@
       timeline: timeline,
       on_finish: function() {
 
-    // jsPsych.data.get().localSave('csv', 'expdata.csv');  //Save the data locally in a .csv file
+    jsPsych.data.get().localSave('csv', 'expdata.csv');  //Save the data locally in a .csv file
     jsPsych.data.displayData();
     }
     });
