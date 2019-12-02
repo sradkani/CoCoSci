@@ -30,7 +30,7 @@ emissions = eye(numStates);
 % preallocate sequence and state storage
 if length(seqLength) > 1
     sequences = cell(numSeqs*length(seqLength), 1);
-    states = cell(numSeqs*length(seqLength), 1);
+    states = cell(numSeqs*seqLength, 1);
 else
     sequences = nan(numSeqs, seqLength);
     states = nan(numSeqs, seqLength);
