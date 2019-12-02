@@ -1,5 +1,5 @@
 function [sequences, states, deltas, alphas] =...
-    generateSeqsHMM(alphabet, maxMotifLength, seqLength, numSeqs)
+    generateSeqsHMM(alphabet, maxMotifLength, seqLength, numSeqs, paramRange)
 
 %% generate motifs
 
@@ -14,7 +14,18 @@ numStates = sum(prod(motifSizes, 2));
 
 %% set parameters for sequence generation sequences with different parameter settings
 % (delta = staying in motif, alpha = prior over motifs);
-deltas = rand(1,numSeqs); alphas = rand(1, numSeqs);
+
+% give extremal dispersion of parameters
+if paramRange
+    deltas = rand(1,numSeqs); alphas = rand(1, numSeqs);
+    
+    % two gaussians 
+    deltas = [0.1+0.2*randn(1, numSeqs/2) (0.2*randn(1, numSeqs/2) + 0.9)];
+    % remove values below and aove
+    dist = [0.1+0.2*randn(1, numSeqs) (0.2*randn(1, numSeqs) + 0.9)]
+else
+    deltas = rand(1,numSeqs); alphas = rand(1, numSeqs);
+end
 
 % compute denominator for C (sum over number of motifs times alpha^length)
 denom = arrayfun(@(x, y) x .* alphas.^y,...
@@ -30,7 +41,7 @@ emissions = eye(numStates);
 % preallocate sequence and state storage
 if length(seqLength) > 1
     sequences = cell(numSeqs*length(seqLength), 1);
-    states = cell(numSeqs*seqLength, 1);
+    states = cell(numSeqs*length(seqLength), 1);
 else
     sequences = nan(numSeqs, seqLength);
     states = nan(numSeqs, seqLength);
@@ -75,7 +86,7 @@ if ischar(alphabet)
 end
 
 %csvwrite('states.csv', states)
-csvwrite('sequences.csv', sequences)
+csvwrite('Experiment/sequences.csv', sequences)
 %csvwrite('deltas.csv', deltas)
 %csvwrite('alphas.csv', alphas)
 

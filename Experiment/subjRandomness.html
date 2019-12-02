@@ -77,7 +77,7 @@
 
       var data2;
       var msg = $.ajax({type: "GET",
-      url: "https://raw.githubusercontent.com/sradkani/CoCoSci/master/Experiment/sequences2.csv",
+      url: "https://raw.githubusercontent.com/sradkani/CoCoSci/master/Experiment/sequences.csv",
        async: false}).responseText;
 
 
@@ -135,7 +135,7 @@
          data: jsPsych.timelineVariable('data'),
        }
 
-     var scale_1 = ["1", "2"];
+     var scale_1 = ["1","2", "3", "4", "5", "6", "7", "8", "9", "10"];
 
       var rating = {
         type: 'survey-likert',
@@ -148,8 +148,8 @@
        var sequence = {
          timeline: [symbol, rating],
          timeline_variables: test_stimuli,
-         /* randomize_order: true,
-         repetitions: 5 */
+         randomize_order: true,
+         //repetitions: 5
        }
 
        timeline.push(sequence);
