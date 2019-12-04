@@ -67,11 +67,13 @@ for seq = 1:numSeqs
     
     %% generate sequences
         
-    % delta to C*alpha
     if flatPrior
+        % flat prior assigns equal probability acorss motifs (normalized by
+        % number of motifs)
         prior = ones(1, size(transitionMat(1,:), 1)) ./...
             repelem(prod(motifSizes,2), prod(motifSizes,2));
     else
+        % delta to C*alpha
         prior = [C(seq).*alphas(seq), transitionMat(1,2:end)];
     end
     
