@@ -1,5 +1,5 @@
 function [sequences, states, deltas, alphas] =...
-    generateSeqsHMM(alphabet, maxMotifLength, seqLength, numSeqs, paramRange)
+    generateSeqsHMM(alphabet, maxMotifLength, seqLength, numSeqs, paramRange, flatPrior)
 
 %% generate motifs
 
@@ -18,17 +18,21 @@ numStates = sum(prod(motifSizes, 2));
 % give extremal dispersion of parameters
 if paramRange
     
-    if mod(numSeqs,2) ~= 0
+    if  numSeqs <= 1
+        error('can only give range of parameters if numSeqs > 1')
+  
+    elseif mod(numSeqs,2) ~= 0 
         error('numSeqs must be even if more than one sequenc length is specified')
+       
     end
     
     % two gaussians 
-    deltas = [0.15+0.4*randn(1, numSeqs/2) (0.2*randn(1, numSeqs/2) + 0.95)];
+    deltas = [0.2+0.6*randn(1, numSeqs/2) (0.2*randn(1, numSeqs/2) + 0.95)];
     % set values below 0 and above 1 to 0.01 and 0.99
     deltas(deltas <= 0) = 0.01;
     deltas(deltas >= 1) = 0.99;
     
-    alphas = abs(1 - deltas);
+    alphas = abs(1 - deltas)/2;
 else
     deltas = rand(1,numSeqs); alphas = rand(1, numSeqs);
 end
@@ -64,8 +68,13 @@ for seq = 1:numSeqs
     %% generate sequences
         
     % delta to C*alpha
-    prior = [C(seq).*alphas(seq), transitionMat(1,2:end)];
-
+    if flatPrior
+        prior = ones(1, size(transitionMat(1,:), 1)) ./...
+            repelem(prod(motifSizes,2), prod(motifSizes,2));
+    else
+        prior = [C(seq).*alphas(seq), transitionMat(1,2:end)];
+    end
+    
     % loop through several sequence lengths
     if length(seqLength) > 1
 
@@ -112,8 +121,6 @@ for seq = 1:numSeqs
 end
 
 % remove duplicate values
-
-
 if ischar(alphabet)
     sequences = char(sequences);
 end
