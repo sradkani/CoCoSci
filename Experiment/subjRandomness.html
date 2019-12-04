@@ -30,10 +30,9 @@
       var instructions = {
         type: "html-keyboard-response",
         stimulus: "<p>This session will last for 10min.</p>" +
-            "<p> In each trial, you will see a sequence of letters. </p>" +
-            "<p> After seeing the sequence, press any key, </p> <p> and you will be asked" +
-             " to rate how random or predictable you find the </p>" +
-            "<p> sequence on a scale from 1 to 10. </p>" +
+            "<p> In each trial, you will see a sequence consisting A's, B's and/or C's. </p>" +
+            " <p> After seeing the sequence, press any key, and you will be asked </p>" +
+             " <p> to judge how likely it is that the sequence came from a random process. </p>" +
             "<p> Each sequence is independent from one another. </p>",
 
         post_trial_gap: 1000
@@ -75,12 +74,13 @@
          data: jsPsych.timelineVariable('data'),
        }
 
-     var scale_1 = ["1","2", "3", "4", "5", "6", "7", "8", "9", "10"];
+     var scale_1 = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10"];
 
       var rating = {
         type: 'survey-likert',
         questions: [
-          {prompt: "Rate the sequence you just saw from completely random (1) to completely predictable (10).", labels: scale_1}
+          {prompt: "<p> How likely it is that this sequence was generated from a random process (equal probability of A,B,C for each item)? </p>" +
+          "<p> Give a rating from 1 (very unlikely) to 10 (very likely) </p>", labels: scale_1}
         ]
       };
 
