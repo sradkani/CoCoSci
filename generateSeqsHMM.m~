@@ -127,8 +127,7 @@ if ischar(alphabet)
     sequences = char(sequences);
 end
 
-% shuffle rows
-sequences = sequences(randperm(size(sequences, 1)),: );
+% shuffle
 
 %csvwrite('states.csv', states)
 csvwrite('Experiment/sequencesExp2.csv', sequences)
