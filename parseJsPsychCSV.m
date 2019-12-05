@@ -50,4 +50,4 @@ datatable.subjID = csvtable(strcmp(csvtable.test_part, 'test'), :).subjIDs;
     
 %% save table
 
-%writetable(datatable, 'pilotdata.csv')
+%writetable(datatable, 'Experiment/pilotdata.csv')
