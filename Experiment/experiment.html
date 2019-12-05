@@ -104,8 +104,8 @@
            type: "html-keyboard-response",
            stimulus: jsPsych.timelineVariable('stimulus'),
            choices: jsPsych.ALL_KEYS,
-           trial_duration: 1000,
-           post_trial_gap: 500,
+           trial_duration: 800,
+           post_trial_gap: 300,
            data: jsPsych.timelineVariable('data'),
            on_start: function(symbol){
              var spacePressed = jsPsych.data.get().last(1).values()[0].key_press
@@ -114,6 +114,15 @@
              symbol.trial_duration = 0;
              symbol.post_trial_gap = 0;
              jsPsych.endCurrentTimeline()
+           }
+
+           // get trial data
+           var trialstring = jsPsych.data.getLastTrialData().json().split('[').join('').split(']').join('');
+           // convert to dictionary and get time elapsed
+           var time_elapsed = JSON.parse(trialstring)["time_elapsed"];
+           // end experiment after 12min
+           if (time_elapsed > 720000) {
+             jsPsych.endExperiment()
            }
          }
        }
