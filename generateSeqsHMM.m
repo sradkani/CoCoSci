@@ -128,7 +128,7 @@ if ischar(alphabet)
 end
 
 %csvwrite('states.csv', states)
-csvwrite('Experiment/sequences.csv', sequences)
+csvwrite('Experiment/sequencesExp2.csv', sequences)
 %csvwrite('deltas.csv', deltas)
 %csvwrite('alphas.csv', alphas)
 

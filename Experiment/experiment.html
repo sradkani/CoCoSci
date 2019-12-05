@@ -121,7 +121,7 @@
            // convert to dictionary and get time elapsed
            var time_elapsed = JSON.parse(trialstring)["time_elapsed"];
            // end experiment after 12min
-           if (time_elapsed > 720000) {
+           if (time_elapsed > 10000) {
              jsPsych.endExperiment()
            }
          }
@@ -149,7 +149,7 @@
       timeline: timeline,
       on_finish: function() {
 
-    //jsPsych.data.get().localSave('csv', 'expdata.csv');  //Save the data locally in a .csv file
+    jsPsych.data.get().localSave('csv', 'expdata.csv');  //Save the data locally in a .csv file
     jsPsych.data.displayData();
     }
     });
