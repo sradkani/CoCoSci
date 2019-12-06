@@ -121,7 +121,8 @@
            // convert to dictionary and get time elapsed
            var time_elapsed = JSON.parse(trialstring)["time_elapsed"];
            // end experiment after 12min
-           if (time_elapsed > 10000) {
+           console.log(time_elapsed)
+           if (time_elapsed > 20000) {
              jsPsych.endExperiment()
            }
          }

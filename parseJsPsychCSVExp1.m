@@ -1,4 +1,4 @@
-pilotfiles = dir('Experiment/Pilot Results/exp*');
+pilotfiles = dir('Experiment/Results Exp1/exp*');
 
 % initialize csvtable
 csvtable = table();
@@ -51,3 +51,4 @@ datatable.subjID = csvtable(strcmp(csvtable.test_part, 'test'), :).subjIDs;
 %% save table
 
 %writetable(datatable, 'Experiment/pilotdata.csv')
+
