@@ -12,8 +12,8 @@ for i = 1:length(pilotfiles)
     % read file
     currentFile = readtable(pilotfiles(i).name);
     
-    numSeqs = [numSeqs sum(diff([0 strcmp(currentFile.test_part, 'test')']) == -1 &...
-    ~cellfun(@(x) startsWith(x, '<p>'), currentFile.stimulus'))];
+    % count number of sequences and concatenate
+    numSeqs = [numSeqs sum(strcmp(currentFile.trial_type, 'survey-multi-choice'))];
     
     % throw out trial_index and time elapsed (was makign trouble in concatenation)
     currentFile.trial_index = [];
@@ -50,22 +50,15 @@ lastEvents = find(diff([0 testIdx']) == -1 &...
 
 firstEvents = find(diff([0 testIdx']) == 1);
 
+% get only those where  intersect
 firstEvents = firstEvents(c);
-
-% indices ranging between events
-idx = [];
-for i = 1:length(firstEvents)
-    idx = [idx firstEvents(i):lastEvents(i)+1];
-end
-
 
 % get rt for key press on last element
 datatable.rt = cellfun(@str2num, csvtable(lastEvents, :).rt,'UniformOutput', false);
 
-
 % get stimulus for each 
 stimuli = cellfun(@(x) char(extractBetween(x, '>', '</div>')),...
-    csvtable(idx,:).stimulus, 'UniformOutput', false);
+    csvtable(testIdx,:).stimulus, 'UniformOutput', false);
 
 % convert into sequences
 sequences = cell(1, numel(lastEvents));
@@ -77,7 +70,11 @@ for i = 1:length(stimuli)
       % if stimuli is an empty character it means the sequence has ended and
     % we should move to the next sequence
     if isempty(stimuli{i})
+        if isempty(stimuli{i-1})
+            continue
+        else
             k = k + 1;
+        end
     else
         % concatenate stimuli into sequences
         sequences{k} = [sequences{k} stimuli{i}];
@@ -87,6 +84,8 @@ for i = 1:length(stimuli)
 
 end
 
+% drop last sequence (likely ended because time elapsed)
+sequences = sequences(1:end-1);
 
 % get stimulus for sequence (remove whitespaces and convert to string)
 datatable.sequences = sequences';
@@ -101,25 +100,23 @@ datatable.RTlikert = cellfun(@str2num,...
     csvtable(lastEvents + 2,:).rt);
 
 % get response to likert scale
-datatable.likertscore = cellfun(@(x) extractBetween(x, '"Q0":', '}'),...
-    csvtable(lastEvents + 2,:).responses);
+datatable.likertscore = cell2mat(cellfun(@(x) extractBetween(x, '"Q0":', '}'),...
+    csvtable(lastEvents + 2,:).responses), 'UniformOutput', false);
 
 %% get info from predicting next item
 
+% TODO 
 datatable.RTpredict = cellfun(@str2num,...
-    csvtable(lastEvents + 3,:).rt);
+    csvtable(strcmp(csvtable.trial_type, 'survey-multi-choice'),:).rt);
 
 datatable.predicted = cellfun(@(x) extractBetween(x, '"Q0":"', '"}'),...
-    csvtable(lastEvents + 3,:).responses);
-
-datatable.correct = cellfun(@(x) startsWith(x, 'Correct'),...
-    csvtable(lastEvents + 4,:).stimulus);
+    csvtable(strcmp(csvtable.trial_type, 'survey-multi-choice'),:).responses);
 
 %% get subject and trial level info
 
 % 2nd argument for repelem: number of sequences for each participant (maybe
 % accummulate array when loading in for loop at beginning of function)
-datatable.subjID = repelem(unique(csvtable.subjIDs),numSeqs);
+datatable.subjID = repelem(unique(csvtable.subjIDs),[numSeqs]);
 
 % save trial IDs (trials that were stopped such that the same sequences
 % appeared, i.e. they couldve gone on to be different)
