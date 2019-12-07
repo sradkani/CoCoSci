@@ -46,10 +46,12 @@
       url: "https://raw.githubusercontent.com/sradkani/CoCoSci/master/Experiment/sequences.csv",
        async: false}).responseText;
 
+      console.log(Papa.parse(msg))
       data2 = Papa.parse(msg)
       data2 = data2['data']
 
       var data2 = Object.values(data2);
+      console.log(Object.values(data2[0]).toString())
 
       var test_stimuli = []
       function csvValues(){
@@ -78,7 +80,7 @@
         type: 'survey-likert',
         questions: [
           {prompt: "<p> How likely it is that this sequence was generated from a random process (equal probability of A,B,C for each item)? </p>" +
-          "<p> Give a rating from 1 (very unlikely) to 10 (very likely) </p>", labels: scale_1}
+          "<p> Give a rating from 1 (very unlikely) to 10 (very likely) </p>", labels: scale_1, required:true}
         ]
       };
 
