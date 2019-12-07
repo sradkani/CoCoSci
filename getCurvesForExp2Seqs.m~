@@ -1,0 +1,22 @@
+function curves = getCurvesForExp2Seqs(alphabet, maxMotifLength, sequences, delta, alpha)
+
+
+maxRandomX = nan(1, size(sequences, 2)- 1);
+% normalize by maxRandomX
+
+
+maxRandomX = findMaxRandomX(alphabet, size(sequences,2), maxMotifLength, delta, alpha);
+
+curves = nan(size(sequences, 1), size(sequences, 2)- 1);
+
+for i = 1:size(sequences,1)
+    curves(i,:) = randomXCurve(...
+        alphabet, maxMotifLength, sequences(i,:), maxRandomX, delta, alpha);
+
+end
+
+figure;
+for i = 1:25
+    subplot(5,5,i)
+    plot(1:size(curves, 2), curves(i,:), 'LineWidth', 2)
+end
