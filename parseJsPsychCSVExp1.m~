@@ -39,13 +39,9 @@ datatable.RTlikert = cellfun(@str2num,...
     strcmp(csvtable.test_part, ''),:).rt);
 
 % get response to questionnaire
-datatable.response = cellfun(@(x) extractBetween(x, '"Q0":', '}'),...
+datatable.response = cell2mat(cellfun(@(x) extractBetween(x, '"Q0":', '}'),...
     csvtable(~startsWith(csvtable.stimulus, '<p>') &...
-    strcmp(csvtable.test_part, ''),:).responses);
-
-% insert nan
-datatable.response(cellfun(@(x) strcmp(x,'""'), datatable.response)) = {'nan'};
-
+    strcmp(csvtable.test_part, ''),:).responses));
 
 %% get subject and trial level info
 datatable.subjID = csvtable(strcmp(csvtable.test_part, 'test'), :).subjIDs;
