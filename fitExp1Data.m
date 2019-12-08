@@ -3,6 +3,7 @@ clear;clc;
 parseJsPsychCSVExp1
 
 datatable(strcmp(datatable.stimulus, ''), :) = [];
+datatable(strcmp(datatable.response, 'nan'), :) = [];
 uniqueIDs = unique(datatable.trialID);
 sequences = {};
 subjRand_human = {};
