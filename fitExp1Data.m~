@@ -10,7 +10,7 @@ subjRand_human = {};
 for i=1:length(uniqueIDs)  
     seq = datatable.stimulus(datatable.trialID==uniqueIDs(i));
     sequences{i} = seq{1};
-    subjRand_human{i} = str2num(cell2mat(datatable.response(datatable.trialID==uniqueIDs(i))));
+    subjRand_human{i} = str2num(string(datatable.response(datatable.trialID==uniqueIDs(i))));
 end
 
 
