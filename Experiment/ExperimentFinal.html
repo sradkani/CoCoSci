@@ -31,6 +31,14 @@
     - put timer / time limit during questions
      */
 
+// predefine shuffle function
+   function shuffle(array) {
+     for (let i = array.length - 1; i > 0; i--) {
+       let j = Math.floor(Math.random() * (i + 1));
+       [array[i], array[j]] = [array[j], array[i]];
+     }
+   }
+
     var timeline = [];
     var welcome = {
       type: 'html-button-response',
@@ -91,7 +99,6 @@
           var response = JSON.parse(trialstring)["responses"][7];
 
           var next_elem = jsPsych.data.get().last(4).values()[0].next_elem
-          console.log(next_elem)
           if (next_elem == response){
             feedback.stimulus = "Correct! + $1"
           }
@@ -107,7 +114,6 @@
       url: "https://raw.githubusercontent.com/ashtishah/CoCoSci/master/Experiment/sequencesTrial.csv",
        async: false}).responseText;
 
-      console.log(Papa.parse(msg))
       data2 = Papa.parse(msg)
       data2 = data2['data']
 
@@ -128,8 +134,6 @@
             Object.values(data2[i][j]).toString().replace(/,/g, '  ') +
             '</div>', data: {test_part: 'training', next_elem: data2[i][j+1]}})
         }
-
-        console.log(next_trial)
 
         // sample from test_stimuli
          var symbol = {
@@ -153,7 +157,6 @@
            // convert to dictionary and get time elapsed
            var time_elapsed = JSON.parse(trialstring)["time_elapsed"];
            // end experiment after 12min
-           console.log(time_elapsed)
            if (time_elapsed > 720000) {
              var end_exp = {
                type: 'html-button-response',
@@ -171,7 +174,6 @@
            timeline: [symbol],
            timeline_variables: test_stimuli,
          }
-         console.log(sequence)
 
          // define questionnaire procedure
          var questionnaire = {
@@ -198,7 +200,6 @@
       var response = JSON.parse(trialstring)["responses"][7];
 
       var next_elem = jsPsych.data.get().last(4).values()[0].next_elem
-      console.log(next_elem)
       if (next_elem == response){
         feedback2.stimulus = "Correct! + $1"
       }
@@ -214,11 +215,14 @@
   url: "https://raw.githubusercontent.com/sradkani/CoCoSci/master/Experiment/sequencesExp2.csv",
    async: false}).responseText;
 
-  console.log(Papa.parse(msg))
   data3 = Papa.parse(msg)
   data3 = data3['data']
 
-  var data3 = Object.values(data3);
+// remove last sequence (is empty)
+  var data3 = Object.values(data3).slice(0, data3.length) ;
+
+// shuffle data
+shuffle(data3)
 
   var next_trial;
 
@@ -235,8 +239,6 @@
         Object.values(data3[i][j]).toString().replace(/,/g, '  ') +
         '</div>', data: {test_part: 'test', next_elem: data3[i][j+1]}})
     }
-
-    console.log(next_trial)
 
     // sample from test_stimuli
      var symbol = {
@@ -260,7 +262,6 @@
        // convert to dictionary and get time elapsed
        var time_elapsed = JSON.parse(trialstring)["time_elapsed"];
        // end experiment after 12min
-       console.log(time_elapsed)
        if (time_elapsed > 720000) {
          var end_exp = {
            type: 'html-button-response',
@@ -278,7 +279,6 @@
        timeline: [symbol],
        timeline_variables: test_stimuli,
      }
-     console.log(sequence2)
 
      // define questionnaire2 procedure
      var questionnaire2 = {
