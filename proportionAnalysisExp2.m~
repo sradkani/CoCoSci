@@ -51,16 +51,12 @@ removeIdx = [1:2, disengagementIdx+1, disengagementIdx+2];
 disengaged(removeIdx) = [];
 
 % pool diff curves in bins
-[bins, edges] = discretize(diffs, linspace(min(diffs), max(diffs), nBins));
+edges = quantile(diffs, nBins-1);
+bins = discretize(diffs, [-inf edges +inf]);
 
-proportionDisengaged = accumarray(bins, disengaged', [], @mean);
+proportionDisengaged = accumarray(bins, disengaged', [], @mean)
 
-binMeans = 0.5 * (edges(1:end-1) + edges(2:end));
-
-figure;
-plot(binMeans, proportionDisengaged, 'r*')
-xlabel('Change in random(x)')
-ylabel('Proportion disenganged')
+plot(1:length(proportionDisengaged)
 
 
 
