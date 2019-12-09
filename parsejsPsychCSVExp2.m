@@ -91,10 +91,6 @@ end
 % get stimulus for sequence (remove whitespaces and convert to string)
 datatable.sequences = sequences';
 
-% remove trials where RT is empty (means that sequence terminated without button
-% press)
-% datatable = datatable(~cellfun(@isempty, datatable.rt), :);
-
 %% get info from likert scale
 % get rt for likert scale (filter instruction & non-test stimuli)eq
 datatable.RTlikert = cellfun(@str2num,...
