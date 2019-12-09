@@ -6,7 +6,7 @@ sequences = datatable.sequences;
 seqlengths = cellfun(@length, sequences)';
 
 if any(seqlengths == 30)
-    error('there are sequences that were not terminated, write code to handle')
+    error('there are sequences that were not terminated, write code to handle this before proceeding')
 end
 
 % tries to find file containing maxRandomX with these parameters in folder, 
