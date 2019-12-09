@@ -1,3 +1,5 @@
+function datatable = parsejsPsychCSVExp2
+
 pilotfiles = dir('Experiment/Results Exp2/exp*');
 
 % initialize csvtable
