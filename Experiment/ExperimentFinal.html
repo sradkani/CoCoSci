@@ -219,10 +219,12 @@
   data3 = data3['data']
 
 // remove last sequence (is empty)
-  var data3 = Object.values(data3).slice(0, data3.length) ;
+  var data3 = Object.values(data3).slice(0, data3.length-1) ;
 
 // shuffle data
 shuffle(data3)
+
+console.log(data3)
 
   var next_trial;
 
@@ -262,7 +264,7 @@ shuffle(data3)
        // convert to dictionary and get time elapsed
        var time_elapsed = JSON.parse(trialstring)["time_elapsed"];
        // end experiment after 12min
-       if (time_elapsed > 720000) {
+       if (time_elapsed > 360000) {
          var end_exp = {
            type: 'html-button-response',
            stimulus: "<p> Thank you for completing this experiment </p>",
