@@ -54,6 +54,8 @@ disengaged(removeIdx) = [];
 [bins, edges] = discretize(diffs, linspace(min(diffs), max(diffs), nBins));
 
 proportionDisengaged = accumarray(bins, disengaged', [], @mean);
+stdErrorDisengaged = accumarray(bins, disengaged', [], @(x) std(x) ./ sqrt( length(x)));
+
 
 binMeans = 0.5 * (edges(1:end-1) + edges(2:end));
 
@@ -61,6 +63,7 @@ plottable = table();
 
 plottable.binMeans = binMeans';
 plottable.propDisengaged = proportionDisengaged;
+plottable.stdErrorDisengaged = stdErrorDisengaged;
 
 writetable(plottable, 'Rdata.csv')
 

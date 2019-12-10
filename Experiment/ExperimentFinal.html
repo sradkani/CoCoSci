@@ -65,6 +65,14 @@
         post_trial_gap: 1000
       };
       timeline.push(instructions);
+      var instructions = {
+        type: 'html-button-response',
+        stimulus: "Some sequences will be highly predictable, like these:",
+            choices: ['Continue'],
+
+        post_trial_gap: 1000
+      };
+      timeline.push(instructions);
 
       var scale_1 =
          ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10"];
@@ -82,7 +90,7 @@
             sorting_stimuli.push("symbol" + i + ".png");
         }
 
-        var multi_choice_options = ["A","B","C","A, B, and C, are all equally likely"];
+        var multi_choice_options = ["A","B","C","I do not know"];
         var multi_choice_block = {
           type: 'survey-multi-choice',
           questions: [
@@ -97,17 +105,20 @@
         on_start: function(feedback) {
           var trialstring = jsPsych.data.getLastTrialData().json().split('[').join('').split(']').join('');
           var response = JSON.parse(trialstring)["responses"][7];
-
+          console.log(response)
           var next_elem = jsPsych.data.get().last(4).values()[0].next_elem
           if (next_elem == response){
             feedback.stimulus = "Correct! + $1"
           }
+          else if (response == "I"){
+              feedback.stimulus = "Okay, let's move to the next trial"
+            }
           else{
             feedback.stimulus = "Incorrect! + $0"+
             "<p> The correct choice was: " + next_elem
           }
           }
-        }
+          }
 
       var data2;
       var msg = $.ajax({type: "GET",
@@ -186,11 +197,114 @@
     csvValues()
     var begin_exp = {
       type: 'html-button-response',
-      stimulus: "<p> You are now ready to proceed with the actual experiment </p>",
+      stimulus: "<p> Some sequences may be completely random, like this one: </p>",
       choices: ['Continue']
     };
     timeline.push(begin_exp)
+    var feedback3 = {
+    type: 'html-button-response',
+    stimulus: "",
+    choices: ['Continue'],
+    on_start: function(feedback3) {
+      var trialstring = jsPsych.data.getLastTrialData().json().split('[').join('').split(']').join('');
+      var response = JSON.parse(trialstring)["responses"][7];
 
+      var next_elem = jsPsych.data.get().last(4).values()[0].next_elem
+      if (next_elem == response){
+        feedback3.stimulus = "Correct! + $1"
+      }
+      else if (response == "I"){
+          feedback3.stimulus = "Okay, let's move to the next trial"
+        }
+      else{
+        feedback3.stimulus = "Incorrect! + $0"+
+        "<p> The correct choice was: " + next_elem
+      }
+      }
+    }
+
+    var data4;
+    var msg = $.ajax({type: "GET",
+    url: "https://raw.githubusercontent.com/ashtishah/CoCoSci/master/Experiment/sequencesTrial2.csv",
+    async: false}).responseText;
+
+    data4 = Papa.parse(msg)
+    data4 = data4['data']
+
+    var data4 = Object.values(data4);
+
+    var next_trial;
+
+    function csvValues3(){
+    var arrayLength = data4.length;
+
+      for (var i = 0; i < arrayLength; i++) {
+        var test_stimuli = []
+          for (var j = 0; j < data4[i].length - 1; j++) {
+
+        next_trial = data4[i][j+1];
+
+        test_stimuli.push({stimulus: '<div style="font-size:65px;">' +
+        Object.values(data4[i][j]).toString().replace(/,/g, '  ') +
+        '</div>', data: {test_part: 'training', next_elem: data4[i][j+1]}})
+    }
+
+    // sample from test_stimuli
+     var symbol = {
+       type: "html-keyboard-response",
+       stimulus: jsPsych.timelineVariable('stimulus'),
+       choices: jsPsych.ALL_KEYS,
+       trial_duration: 800,
+       post_trial_gap: 300,
+       data: jsPsych.timelineVariable('data'),
+       on_start: function(symbol){
+         var spacePressed = jsPsych.data.get().last(1).values()[0].key_press
+       if(spacePressed == 32) {
+         symbol.stimulus = "";
+         symbol.trial_duration = 0;
+         symbol.post_trial_gap = 0;
+         jsPsych.endCurrentTimeline()
+       }
+
+       // get trial data
+       var trialstring = jsPsych.data.getLastTrialData().json().split('[').join('').split(']').join('');
+       // convert to dictionary and get time elapsed
+       var time_elapsed = JSON.parse(trialstring)["time_elapsed"];
+       // end experiment after 12min
+       if (time_elapsed > 720000) {
+         var end_exp = {
+           type: 'html-button-response',
+           stimulus: "<p> Thank you for completing this experiment </p>",
+           choices: ['Exit']
+         }
+         timeline.push(end_exp);
+         jsPsych.endExperiment()
+       }
+     }
+    }
+
+     /* define sequence procedure */
+     var sequence = {
+       timeline: [symbol],
+       timeline_variables: test_stimuli,
+     }
+
+     // define questionnaire3 procedure
+     var questionnaire3 = {
+       timeline: [sequence, likert_page, multi_choice_block, feedback3], //
+     }
+     timeline.push(questionnaire3);
+
+    }
+    }
+    csvValues3()
+    var begin_exp = {
+    type: 'html-button-response',
+    stimulus: "<p> You are now ready to proceed with the actual experiment. </p>"+
+    "<p>Some sequences will be random, some will not, and others will be somewhere inbetween </p>",
+    choices: ['Continue']
+    };
+    timeline.push(begin_exp)
     var feedback2 = {
     type: 'html-button-response',
     stimulus: "",
@@ -203,6 +317,9 @@
       if (next_elem == response){
         feedback2.stimulus = "Correct! + $1"
       }
+      else if (response == "I"){
+          feedback2.stimulus = "Okay, let's move to the next trial"
+        }
       else{
         feedback2.stimulus = "Incorrect! + $0"+
         "<p> The correct choice was: " + next_elem

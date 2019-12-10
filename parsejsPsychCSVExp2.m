@@ -40,7 +40,7 @@ datatable = table();
 testIdx = strcmp(csvtable.test_part, 'test');
 
 % get index of last event of each sequence (minus 2 because: -1 appears on
-% the first 0 affter a streak, and because we have a blank stimulus after a
+% the first 0 after a streak, and because we have a blank stimulus after a
 % space press which also is registered 
 
 lastEventsWithoutExcl = find(diff([0 testIdx']) == -1) - 2;
