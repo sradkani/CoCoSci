@@ -28,8 +28,8 @@ end
 
 
 figure;
-for i = 1:size(sequences, 1)
-    subplot(6,5,i)
+for i = 1:25
+    subplot(5,5,i)
     plot(1:size(curves, 2), curves(i,:), 'LineWidth', 2)
     title(sequences(i,:), 'FontSize', 9)
     ylim([0 1])
@@ -37,8 +37,8 @@ end
 
 
 figure;
-for i = 1:size(sequences, 1)
-    subplot(6,5,i)
+for i = 1:25
+    subplot(5,5,i)
     plot(1:size(curves, 2)-1, diff(curves(i,:)), 'LineWidth', 2)
     title(sequences(i,:), 'FontSize', 9)
 end
