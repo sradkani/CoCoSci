@@ -21,14 +21,19 @@ function ModelHumanCorrelation = findModelHumanCorr(sequences, subjRand_human, m
     end
     
     % unroll the human data and repeat subjRand_model accordingly
-    subjRand_human_unrolled = cell2mat(cellfun(@(x) reshape(x.', 1, []), subjRand_human, 'UniformOutput', false))';
-    subjRand_model_repeated = [];
-    for i=1:length(subjRand_model)
-        subjRand_model_repeated = [subjRand_model_repeated; repmat(subjRand_model(i), [length(subjRand_human{i}), 1])];
-    end
+%     subjRand_human_unrolled = cell2mat(cellfun(@(x) reshape(x.', 1, []), subjRand_human, 'UniformOutput', false))';
+%     subjRand_model_repeated = [];
+%     for i=1:length(subjRand_model)
+%         subjRand_model_repeated = [subjRand_model_repeated; repmat(subjRand_model(i), [length(subjRand_human{i}), 1])];
+%     end
     
     % find the correlation between human and model subjective randomness 
-    CorrMat = corr([subjRand_human_unrolled, subjRand_model_repeated]);
+%     CorrMat = corr([subjRand_human_unrolled, subjRand_model_repeated]);
+    
+    % take the average of human ratings for each sequence
+    subjRand_human_mean = cellfun(@(x) mean(x), subjRand_human);
+    
+    CorrMat = corr([subjRand_human_mean', subjRand_model]);
     ModelHumanCorrelation = CorrMat(1,2);
     
     display(alpha)
