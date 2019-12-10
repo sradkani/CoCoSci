@@ -57,6 +57,13 @@ proportionDisengaged = accumarray(bins, disengaged', [], @mean);
 
 binMeans = 0.5 * (edges(1:end-1) + edges(2:end));
 
+plottable = table();
+
+plottable.binMeans = binMeans';
+plottable.propDisengaged = proportionDisengaged;
+
+writetable(plottable, 'Rdata.csv')
+
 figure;
 plot(binMeans, proportionDisengaged,  'ro-', 'LineWidth', 3)
 xlabel('Change in random(x)', 'FontSize', 20)
