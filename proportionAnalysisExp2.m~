@@ -79,8 +79,9 @@ plot(diffs', disengaged', 'bo')
 
 plottable = table();
 
-plottable.disengaged = disengaged';
-plottable.diffs = diffs;
+plottable.binMeans = d';
+plottable.propDisengaged = proportionDisengaged;
+plottable.stdErrorDisengaged = stdErrorDisengaged;
 
 writetable(plottable, 'Rdata2.csv')
 

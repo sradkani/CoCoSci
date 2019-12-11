@@ -27,18 +27,10 @@ end
 
 
 curveTable = table();
-curveTable.curve1 = curves(9, :)';
-curveTable.sequence1 = sequences(9, :)';
+curveTable = 
 
-curveTable.curve2 = curves(14, :)';
-curveTable.sequence2 = sequences(9, :)';
 
-curveTable.curve3 = curves(34, :)';
-curveTable.sequence3 = sequences(9, :)';
-
-curveTable.t = (1:size(curves, 2))';
-
-writetable(curveTable, 'curveRData.csv');
+writetable(
 
 
 figure;
