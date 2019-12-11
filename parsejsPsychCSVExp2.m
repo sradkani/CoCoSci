@@ -1,3 +1,5 @@
+function datatable = parsejsPsychCSVExp2
+
 pilotfiles = dir('Experiment/Results Exp2/exp*');
 
 % initialize csvtable
@@ -38,7 +40,7 @@ datatable = table();
 testIdx = strcmp(csvtable.test_part, 'test');
 
 % get index of last event of each sequence (minus 2 because: -1 appears on
-% the first 0 affter a streak, and because we have a blank stimulus after a
+% the first 0 after a streak, and because we have a blank stimulus after a
 % space press which also is registered 
 
 lastEventsWithoutExcl = find(diff([0 testIdx']) == -1) - 2;
@@ -90,10 +92,6 @@ end
 
 % get stimulus for sequence (remove whitespaces and convert to string)
 datatable.sequences = sequences';
-
-% remove trials where RT is empty (means that sequence terminated without button
-% press)
-% datatable = datatable(~cellfun(@isempty, datatable.rt), :);
 
 %% get info from likert scale
 % get rt for likert scale (filter instruction & non-test stimuli)eq
