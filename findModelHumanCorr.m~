@@ -1,4 +1,4 @@
-function [ModelHumanCorrelation_each, ModelHumanCorrelation_avg] = findModelHumanCorr(sequences, subjRand_human, modelParams, delta, alpha)
+function ModelHumanCorrelation = findModelHumanCorr(sequences, subjRand_human, modelParams, delta, alpha)
     % This function finds the correlation between model randomness estimates and
     % human subjective randomness for a given set of model parameters
     % each sequence has a couple of subjRAnd_human associated with it
@@ -27,20 +27,18 @@ function [ModelHumanCorrelation_each, ModelHumanCorrelation_avg] = findModelHuma
         subjRand_model_repeated = [subjRand_model_repeated; repmat(subjRand_model(i), [length(subjRand_human{i}), 1])];
     end
     
-    % find the correlation between human and model subjective randomness 
-    CorrMatEachResp = corr([subjRand_human_unrolled, subjRand_model_repeated]);
-    ModelHumanCorrelation_each = CorrMatEachResp(1,2);
+    find the correlation between human and model subjective randomness 
+    CorrMat = corr([subjRand_human_unrolled, subjRand_model_repeated]);
     
     % take the average of human ratings for each sequence
     subjRand_human_mean = cellfun(@(x) mean(x), subjRand_human);
     
-    CorrMatAvgResp = corr([subjRand_human_mean', subjRand_model]);
-    ModelHumanCorrelation_avg = CorrMatAvgResp(1,2);
+    CorrMatAvg = corr([subjRand_human_mean', subjRand_model]);
+    ModelHumanCorrelation = CorrMat(1,2);
     
     display(alpha)
     display(delta)
-    display(ModelHumanCorrelation_each)
-    display(ModelHumanCorrelation_avg)
+    display(ModelHumanCorrelation)
 end
 
 
