@@ -1,7 +1,7 @@
 library(tidyverse)
 library(lmtest)
 library(Rmisc)
-
+library(R.matlab)
 setwd("/Users/galraz1/Developer/CoCoSci")
 df1 <- data.frame(read_csv('Rdata.csv'))
 
@@ -81,4 +81,57 @@ ggplot(curves, aes(x=1:29, y=curve3)) + geom_line(size = 1.4) +
         axis.title.y = element_text(size=20),
         axis.text.x = element_text(size=16),
         axis.text.y = element_text(size=16)) 
+
+
+avg <- as.numeric(unlist(readMat('modelHumanCorr_avg.mat')))
+avg[avg < 0.3] = 0.3
+
+each <- as.numeric(unlist(readMat('modelHumanCorr_each.mat')))
+each[each < 0.1] <- 0.1
+
+# Dummy data
+delta <- seq(0.25, 0.95, by=0.1)
+alpha <- seq(0.05, 0.95, by=0.1)
+data <- expand.grid(X=alpha, Y=delta)
+data$rho <- avg
+
+# Heatmap 
+ggplot(data, aes(X, Y, fill= rho)) + 
+  geom_tile() + scale_fill_gradient2(low="grey", mid="blue", high="red",
+                                     midpoint = 0.6) +
+  xlim(0.05, 0.95) + ylim(0.25, 0.95) + xlab(expression(alpha)) +
+  ylab(expression(delta)) + 
+  theme_classic() + 
+  theme(panel.grid.minor = element_blank(), 
+        panel.background = element_blank(),
+        plot.background = element_blank(),
+        plot.title = element_text(hjust=0.5, size=26, face="bold"),
+        axis.title.x = element_text(vjust=6, size=20),
+        axis.title.y = element_text(hjust=0.5, vjust =-5, size=20),
+        axis.text.x = element_text(vjust=10, size=14, family = 'sans'),
+        axis.text.y = element_text(margin = margin(l = 30), hjust = 0, size =14, family = 'sans'), 
+        axis.line = element_blank(),
+        axis.ticks = element_blank())
+
+
+# plot for each
+data <- expand.grid(X=alpha, Y=delta)
+data$rho <- each
+
+ggplot(data, aes(X, Y, fill= rho)) + 
+  geom_tile() + scale_fill_gradient2(low="grey", mid="blue", high="red",
+                                       midpoint = 0.4) +
+  xlim(0.05, 0.95) + ylim(0.25, 0.95) + xlab(expression(alpha)) +
+  ylab(expression(delta)) + 
+  theme_classic() + 
+  theme(panel.grid.minor = element_blank(), 
+        panel.background = element_blank(),
+        plot.background = element_blank(),
+        plot.title = element_text(hjust=0.5, size=26, face="bold"),
+        axis.title.x = element_text(vjust=4, size=20),
+        axis.title.y = element_text(hjust=0.5, vjust =-5, size=20),
+        axis.text.x = element_text(vjust=12, size=10, family = 'sans'),
+        axis.text.y = element_text(margin = margin(l = 45), hjust = 0, size =12, family = 'sans'), 
+        axis.line = element_blank(),
+        axis.ticks = element_blank())
 
