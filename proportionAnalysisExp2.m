@@ -1,4 +1,4 @@
-function proportionAnalysisExp2(alphabet, maxMotifLength, delta, alpha, nBins)
+function proportionAnalysisExp2(alphabet, maxMotifLength, delta, alpha, remove1st)
 % this function takes the data for experiment 2 and visualizes the
 % relationship between proportion of disengaging and the diff of random x
 datatable = parsejsPsychCSVExp2;
@@ -12,7 +12,7 @@ end
 % tries to find file containing maxRandomX with these parameters in folder, 
 % if it's not there, it computes it itself
 try
-maxRandomX = importdata(sprintf('maxRandomX_delta%.2f_alpha%.2f.mat', delta, alpha));
+maxRandomX = importdata(sprintf('savedMaxRandomX/maxRandomX_delta%.2f_alpha%.2f.mat', delta, alpha));
 catch
     warning('maxRandomX not stored for these parameter settings. Computing them now, which might take longer')
     maxRandomX = nan(1, size(sequences, 2));
@@ -37,6 +37,9 @@ end
 % flatten diff curves and take absolute value
 diffs = abs(cell2mat(cellfun(@transpose, diffcurves, 'UniformOutput', false)));
 
+% get event positions
+eventpos = cell2mat(cellfun(@(x) (1:length(x))', diffcurves, 'UniformOutput', false));
+
 % get disengagement (1 = disengaged, 0 = continued)
 disengaged = ismember(1:sum(seqlengths), cumsum(seqlengths));
 
@@ -50,14 +53,58 @@ removeIdx = [1:2, disengagementIdx+1, disengagementIdx+2];
 
 disengaged(removeIdx) = [];
 
+% make disengaged column vector;
+disengaged = disengaged.';
+
+% remove 1st elements of diffs
+if remove1st
+    idx = (eventpos==1 & diffs == 0);
+    % remove diffs at eventpos 1
+    diffs(idx) = [];
+    disengaged(idx) = [];
+    eventpos(idx) = [];
+    
+end
+
 % pool diff curves in bins
-[bins, edges] = discretize(diffs, linspace(min(diffs), max(diffs), nBins));
+pooledg = quantile(diffs,[0 0.2 0.4 0.6 0.8 1]);
+linedges = linspace(min(diffs), max(diffs), 6);
 
-proportionDisengaged = accumarray(bins, disengaged', [], @mean);
-stdErrorDisengaged = accumarray(bins, disengaged', [], @(x) std(x) ./ sqrt( length(x)));
+[bins, edges] = discretize(diffs, pooledg);
+
+proportionDisengaged = accumarray(bins, disengaged, [], @mean);
+stdErrorDisengaged = accumarray(bins, disengaged, [], @(x) std(x) ./ sqrt( length(x)));
+
+binMeans = (0.5 * (edges(1:end-1) + edges(2:end)))';
+
+% binning random(x) values and get mean proportion of disengaged
+figure;
+plot(diffs, eventpos,  'ro', 'LineWidth', 3)
+xlabel('Change in random(x)', 'FontSize', 20)
+ylabel('event pos', 'FontSize', 20)
 
 
-binMeans = 0.5 * (edges(1:end-1) + edges(2:end));
+% get trial position as a function of random x
+figure;
+plot(binMeans, proportionDisengaged,  'ro-', 'LineWidth', 3)
+xlabel('Change in random(x)', 'FontSize', 20)
+ylabel('Proportion disenganged', 'FontSize', 20)
+
+
+[a,b,c] = mnrfit([eventpos diffs], disengaged + 1);
+
+
+plottable = table();
+
+plottable.disengaged = disengaged;
+plottable.diffs = diffs;
+plottable.binMeans = binMeans(bins);
+
+
+
+plottable.eventpos = eventpos;
+
+writetable(plottable, 'Rdata2.csv')
 
 plottable = table();
 
@@ -66,23 +113,6 @@ plottable.propDisengaged = proportionDisengaged;
 plottable.stdErrorDisengaged = stdErrorDisengaged;
 
 writetable(plottable, 'Rdata.csv')
-
-figure;
-plot(binMeans, proportionDisengaged,  'ro-', 'LineWidth', 3)
-xlabel('Change in random(x)', 'FontSize', 20)
-ylabel('Proportion disenganged', 'FontSize', 20)
-
-mnrfit(diffs', disengaged'+1)
-
-figure;
-plot(diffs', disengaged', 'bo')
-
-plottable = table();
-
-plottable.disengaged = disengaged';
-plottable.diffs = diffs;
-
-writetable(plottable, 'Rdata2.csv')
 
 
 

@@ -27,19 +27,26 @@ end
 
 
 curveTable = table();
+diffTable = table();
+sequenceTable = table();
+
 curveTable.curve1 = curves(9, :)';
-curveTable.sequence1 = sequences(9, :)';
+diffTable.diff1 = diff(curves(9, :))';
+sequenceTable.sequence1 = sequences(9, :)';
 
 curveTable.curve2 = curves(14, :)';
-curveTable.sequence2 = sequences(9, :)';
+diffTable.diff2 = diff(curves(14, :))';
+sequenceTable.sequence2 = sequences(14, :)';
 
 curveTable.curve3 = curves(34, :)';
-curveTable.sequence3 = sequences(9, :)';
+diffTable.diff3 = diff(curves(34, :))';
+sequenceTable.sequence3 = sequences(34, :)';
 
 curveTable.t = (1:size(curves, 2))';
 
 writetable(curveTable, 'curveRData.csv');
-
+writetable(diffTable, 'diffRData.csv');
+writetable(sequenceTable, 'sequenceRData.csv');
 
 figure;
 for i = 1:25
