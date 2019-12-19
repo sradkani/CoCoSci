@@ -10,7 +10,7 @@ curve = nan(1, length(sequence)-1);
 for i = 1:length(sequence)-1
     curve(i) = findRandomness(alphabet, maxMotifLength, sequence(1:i+1), delta, alpha);
     
-    curve(i) = curve(i)./maxRandomX(i);
+    curve(i) = curve(i); %%./maxRandomX(i);
 
 end
 

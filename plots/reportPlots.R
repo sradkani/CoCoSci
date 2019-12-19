@@ -12,8 +12,12 @@ ggplot(df1, aes(binMeans, propDisengaged)) + geom_line()+
 df2 <- data.frame(read_csv('Rdata2.csv'))
 
 mylogit <- glm(disengaged ~ eventpos, data = df2, family = "binomial")
-mylogit2 <- glm(disengaged ~ diffs + eventpos, data = df2, family = "binomial")
+mylogit2 <- glm(disengaged ~ eventpos + log(diffs), data = df2, family = "binomial")
+mylogit3 <- glm(disengaged ~ diffs, data = df2, family = "binomial")
+
 lrtest(mylogit, mylogit2)
+lrtest(mylogit2, mylogit3)
+
 
 tgc <- summarySE(df2, measurevar="disengaged", groupvars=c('binMeans'))
 
@@ -30,8 +34,8 @@ ggplot(tgc, aes(binMeans, disengaged))  + geom_point(size=3, shape=21, fill = 'b
         axis.text.x = element_text(size=16),
         axis.text.y = element_text(size=16)) 
 
-ggplot(df2, aes(diffs, eventpos)) + geom_point() + 
-  xlab(expression(Delta~random(x))) + ylab('position in sequence') +
+ggplot(df2, aes(eventpos, diffs)) + geom_point() + 
+  ylab(expression(Delta~random(x))) + xlab('position in sequence') +
   theme_bw() + 
   theme(panel.grid.minor = element_blank(), 
         plot.title = element_text(hjust=0.5, size=26, face="bold"),
@@ -39,6 +43,18 @@ ggplot(df2, aes(diffs, eventpos)) + geom_point() +
         axis.title.y = element_text(size=20),
         axis.text.x = element_text(size=16),
         axis.text.y = element_text(size=16)) 
+
+ggplot(df2,  aes(diffs, disengaged)) + geom_point(position='jitter') + 
+  xlab(expression(Delta~random(x))) + ylab('P(disengage)') +
+  theme_bw() + 
+  theme(panel.grid.minor = element_blank(), 
+        plot.title = element_text(hjust=0.5, size=26, face="bold"),
+        axis.title.x = element_text(hjust=0.53, size=20),
+        axis.title.y = element_text(size=20),
+        axis.text.x = element_text(size=16),
+        axis.text.y = element_text(size=16))
+
+
 
 # boxplot change in randomX for disengaged vs engaged 
 ggplot(df2, aes(x=as.factor(disengaged), y=diffs)) + geom_boxplot()
