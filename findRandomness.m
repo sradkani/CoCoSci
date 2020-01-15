@@ -27,14 +27,13 @@ function [random_X] = findRandomness(alphabet, maxMotifLength, sequences, delta,
     numStates = sum(prod(motifSizes, 2));
     
 
-%% generate emissions
+    %% generate emissions
     
     emissions = zeros(numStates, sizeAlphabet);
     stateOutcomes = cell2mat(cellfun(@(x) reshape(x.', 1, []), motifs, 'UniformOutput', false));
     for i=1:sizeAlphabet
         emissions(:,i) = (stateOutcomes == alphabet(i))';
     end
-    
     
 %% generate transition matrix
     % compute denominator for C (sum over number of motifs times alpha^length)
