@@ -1,6 +1,6 @@
 function datatable = parsejsPsychCSVExp2
 
-pilotfiles = dir('Experiment/Results Exp2/exp*');
+pilotfiles = dir('../Experiment/Results Exp2/exp*');
 
 % initialize csvtable
 csvtable = table();
@@ -12,7 +12,7 @@ numSeqs = [];
 for i = 1:length(pilotfiles)
     
     % read file
-    currentFile = readtable(pilotfiles(i).name);
+    currentFile = readtable(strcat('../Experiment/Results Exp2/', pilotfiles(i).name));
     
     numSeqs = [numSeqs sum(diff([0 strcmp(currentFile.test_part, 'test')']) == -1 &...
     ~cellfun(@(x) startsWith(x, '<p>'), currentFile.stimulus'))];
