@@ -1,0 +1,3 @@
+[submodule "Experiment1/mTurkExp1"]
+	path = Experiment1/mTurkExp1
+	url = https://github.com/sradkani/CoCoSci
