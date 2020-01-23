@@ -41,7 +41,6 @@
             " <p> After seeing the sequence, press any key, and you will be asked </p>" +
              " <p> to judge how likely it is that the sequence came from a random process. </p>" +
             "<p> Each sequence is independent from one another. </p>",
-
         post_trial_gap: 1000
       };
       timeline.push(instructions);
@@ -50,7 +49,7 @@
 // get data from github file
       var data2;
       var msg = $.ajax({type: "GET",
-      url: "https://raw.githubusercontent.com/sradkani/CoCoSci/master/Experiment/sequences.csv",
+      url: "https://raw.githubusercontent.com/sradkani/CoCoSci/master/Experiment%201/sequences.csv",
        async: false}).responseText;
 
       console.log(Papa.parse(msg))
