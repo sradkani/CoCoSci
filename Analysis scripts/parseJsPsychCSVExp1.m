@@ -1,35 +1,32 @@
-function datatable = parsejsPsychCSVExp1
+function datatable = parseJsPsychCSVExp1
 
-pilotfiles = dir('Experiment/Results Exp1/exp*');
+alldata = readtable('Experiment1/mTurkExp1/trialdata.csv');
 
 % initialize csvtable
-csvtable = table();
+subjTable = table();
+    
+% add list of worker ids
+subjTable.workerIDs = unique(alldata{:, 1});
 
-% loop through files and concatenate
-for i = 1:length(pilotfiles)
-    
-    % read file
-    currentFile = readtable(pilotfiles(i).name);
-    
-    % add list of subject ids
-    currentFile.subjIDs = (repelem(extractBetween(pilotfiles(i).name, 'expdata', '.csv'),...
-        size(currentFile, 1)))';
-    
-    % concatenate tables
-    csvtable = [csvtable; currentFile];
-    
-end
-
-% initialize datatable
+% here the final table will be stored
 datatable = table();
 
-%% get info from test sequences
+% info about each screen shown in jspsych
+trialdata = alldata{:, 4}; 
+
+% booleans indicating instructions, trial or likert window
+instructions = contains(trialdata, '"trial_type": "text"') | contains(trialdata, '<p>Thanks for participating');
+trials = contains(trialdata, '"stimulus": "<div style=');
+likert = contains(trialdata, '"trial_type": "survey-likert"');
+
 % get rt for sequences
-datatable.RTseq = cellfun(@str2num, csvtable(strcmp(csvtable.test_part, 'test'), :).rt);
+datatable.RTseq = cellfun(@(x) extractBetween(x, '"rt": ', ','), trialdata(trials));
+
+% get rt for likert scale (filter instruction & non-test stimuli)
+datatable.RTlikert = cellfun(@(x) extractBetween(x, '"rt": ', ','), trialdata(likert));
 
 % get stimulus for sequence (extract formatting from html string)
-datatable.stimulus = cellfun(@(x) extractBetween(x, '>', '</div>'),...
-    csvtable(strcmp(csvtable.test_part, 'test'),:).stimulus);
+datatable.stimulus = cellfun(@(x) extractBetween(x, '<div style=\"font-size:40px;\">', '</div>"'), trialdata(trials));
 
 % get stimulus for sequence (remove whitespaces and convert to string)
 datatable.stimulus = strrep(datatable.stimulus, ' ', '');
