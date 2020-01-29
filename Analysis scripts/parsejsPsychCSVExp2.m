@@ -1,73 +1,39 @@
 function datatable = parsejsPsychCSVExp2
 
-pilotfiles = dir('../Experiment/Results Exp2/exp*');
+alldata = readtable('Experiment2/mTurkExp2/trialdata.csv');
 
-% initialize csvtable
-csvtable = table();
-
-% number of sequences per file
-numSeqs = [];
-
-% loop through files and concatenate
-for i = 1:length(pilotfiles)
-    
-    % read file
-    currentFile = readtable(strcat('../Experiment/Results Exp2/', pilotfiles(i).name));
-    
-    numSeqs = [numSeqs sum(diff([0 strcmp(currentFile.test_part, 'test')']) == -1 &...
-    ~cellfun(@(x) startsWith(x, '<p>'), currentFile.stimulus'))];
-    
-    % throw out trial_index and time elapsed (was makign trouble in concatenation)
-    currentFile.trial_index = [];
-    currentFile.time_elapsed = [];
-    
-    % add list of subject ids
-    currentFile.subjIDs = (repelem(extractBetween(pilotfiles(i).name, 'expdata', '.csv'),...
-        size(currentFile, 1)))';
-    
-    % concatenate tables
-    csvtable = [csvtable; currentFile];
-    
-    
-end
-
-% initialize datatable
+% here the final table will be stored
 datatable = table();
 
-%% get info from test sequences
+% info about each screen shown in jspsych
+trialdata = alldata{:, 4}; 
 
-% all the events where a symbol was displayed 
-testIdx = strcmp(csvtable.test_part, 'test');
+% booleans indicating instructions, trial, prediction question or feedback window
+instructions = contains(trialdata, '"test_part": "instructions"');
+trials = contains(trialdata, '"test_part": "test"');
+prediction = contains(trialdata, '"test_part": "prediction"');
+feedback = contains(trialdata, '"test_part": "feedback"');
 
-% get index of last event of each sequence (minus 2 because: -1 appears on
-% the first 0 after a streak, and because we have a blank stimulus after a
-% space press which also is registered 
+% get index of last event of each sequence
+lastEvents = find(diff([0 trials']) == -1) - 1;
 
-lastEventsWithoutExcl = find(diff([0 testIdx']) == -1) - 2;
-
-lastEvents = find(diff([0 testIdx']) == -1 &...
-    ~cellfun(@(x) startsWith(x, '<p>'), csvtable.stimulus')) - 2;
-
-[~,~,c] = intersect(lastEvents, lastEventsWithoutExcl);
-
-firstEvents = find(diff([0 testIdx']) == 1);
-
-firstEvents = firstEvents(c);
+% get index of first event of each sequence
+firstEvents = find(diff([0 trials']) == 1);
 
 % indices ranging between events
 idx = [];
 for i = 1:length(firstEvents)
-    idx = [idx firstEvents(i):lastEvents(i)+1];
+    idx = [idx firstEvents(i):lastEvents(i)];
 end
 
+% get stimulus for each 
+stimuli = cellfun(@(x) char(extractBetween(x, '>', '</div>')),...
+    trialdata, 'UniformOutput', false);
 
 % get rt for key press on last element
 datatable.rt = cellfun(@str2num, csvtable(lastEvents, :).rt,'UniformOutput', false);
 
 
-% get stimulus for each 
-stimuli = cellfun(@(x) char(extractBetween(x, '>', '</div>')),...
-    csvtable(idx,:).stimulus, 'UniformOutput', false);
 
 % convert into sequences
 sequences = cell(1, numel(lastEvents));

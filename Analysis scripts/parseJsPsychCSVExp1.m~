@@ -8,7 +8,7 @@ datatable = table();
 % info about each screen shown in jspsych
 trialdata = alldata{:, 4}; 
 
-% booleans indicating trial or likert window
+% booleans indicating instructions, trial or likert window
 trials = contains(trialdata, '"test_part": "test"');
 likert = contains(trialdata, '"test_part": "likert"');
 
@@ -24,16 +24,19 @@ datatable.stimulus = cellfun(@(x) extractBetween(x, '<div style=\"font-size:40px
 % get stimulus for sequence (remove whitespaces and convert to string)
 datatable.stimulus = strrep(datatable.stimulus, ' ', '');
 
-% get response to questionnaire (+1 because 10 is registered as 9 for some
-% reason in jspsych)
-datatable.response = cellfun(@(x) str2double(extractBetween(x, '"Q0\":', '}')) + 1,...
-    trialdata(likert));
+% get response to questionnaire
+datatable.response = cellfun(@(x) extractBetween(x, '"Q0":', '}'), trialdata(likert));
 
 % add list of worker ids
 [workerIDs, ~, pos] = unique(alldata{:, 1});
 
 trialsPerWorker = pos(trials);
 
-datatable.subjID = workerIDs(trialsPerWorker);
+datatable.subjID = workerIDs(;
 
 [~, ~, datatable.trialID] = uniqueRowsCA(datatable.stimulus);
+    
+%% save table
+
+%writetable(datatable, 'Experiment/pilotdata.csv')
+
