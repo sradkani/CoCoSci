@@ -108,7 +108,7 @@ writetable(plottable, 'Rdata2.csv')
 
 plottable = table();
 
-plottable.binMeans = binMeans';
+plottable.binMeans = binMeans;
 plottable.propDisengaged = proportionDisengaged;
 plottable.stdErrorDisengaged = stdErrorDisengaged;
 

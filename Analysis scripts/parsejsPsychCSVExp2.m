@@ -1,3 +1,5 @@
+function datatable =  parsejsPsychCSVExp2
+
 alldata = readtable('Experiment2/mTurkExp2/trialdata.csv');
 
 % here the final table will be stored
