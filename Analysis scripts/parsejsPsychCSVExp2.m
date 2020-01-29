@@ -22,8 +22,8 @@ firstEvents = find(diff([0 trials']) == 1);
 % indices ranging between events
 sequences = cell(length(firstEvents), 1);
 for i = 1:length(firstEvents)
-    sequences{i} = string(cellfun(@(x) extractBetween(x, '>', '</div>'),...
-    trialdata(firstEvents(i):lastEvents(i),:), 'UniformOutput', false)).';
+    sequences{i} = char(cellfun(@(x) cell2mat(extractBetween(x, '>', '</div>')),...
+    trialdata(firstEvents(i):lastEvents(i),:), 'UniformOutput', false).').';
 end
 
 % get stimulus for sequence (remove whitespaces and convert to string)
@@ -37,12 +37,12 @@ datatable.rt = cellfun(@(x) cell2mat(extractBetween(x, '"rt": ', ',')),...
 datatable.RTpredict = cellfun(@(x) cell2mat(extractBetween(x, '"rt": ', ',')),...
     trialdata(lastEvents + 1), 'UniformOutput', false);
 
-datatable.predicted = cellfun(@(x) extractBetween(x, '"Q0":"', '"}'),...
-      trialdata(lastEvents + 1));
+datatable.predicted = cellfun(@(x) extractBetween(x, '{\"Q0\":\"', '\"}"'),...
+      trialdata(lastEvents + 1), 'UniformOutput', false);
 
 % check feedback
 datatable.correct = cellfun(@(x) contains(x, 'Correct'),...
-    trialdata(lastEvents + 2));
+    trialdata(lastEvents + 2), 'UniformOutput', false);
 
 %% get subject and trial level info
 
