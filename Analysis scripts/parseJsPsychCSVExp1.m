@@ -34,6 +34,6 @@ datatable.response = cellfun(@(x) str2double(extractBetween(x, '"Q0\":', '}')) +
 
 trialsPerWorker = pos(trials);
 
-datatable.subjID = workerIDs(trialsPerWorker);
+datatable.workerID = workerIDs(trialsPerWorker);
 
 [~, ~, datatable.trialID] = uniqueRowsCA(datatable.stimulus);

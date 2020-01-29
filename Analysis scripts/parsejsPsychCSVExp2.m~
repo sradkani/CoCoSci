@@ -9,7 +9,6 @@ trialdata = alldata{:, 4};
 % booleans indicating instructions, trial, prediction question or feedback window
 instructions = contains(trialdata, '"test_part": "instructions"');
 trials = contains(trialdata, '"test_part": "test"');
-training = contains(trialdata, '"test_part": "training"');
 prediction = contains(trialdata, '"test_part": "prediction"');
 feedback = contains(trialdata, '"test_part": "feedback"');
 
@@ -35,23 +34,20 @@ datatable.rt = cellfun(@(x) cell2mat(extractBetween(x, '"rt": ', ',')),...
 
 % get info from predicting next item
 datatable.RTpredict = cellfun(@(x) cell2mat(extractBetween(x, '"rt": ', ',')),...
-    trialdata(lastEvents + 1), 'UniformOutput', false);
+    trialdata(prediction), 'UniformOutput', false);
 
 datatable.predicted = cellfun(@(x) extractBetween(x, '"Q0":"', '"}'),...
-      trialdata(lastEvents + 1));
+     trialdata(prediction));
 
 % check feedback
-datatable.correct = cellfun(@(x) contains(x, 'Correct'),...
-    trialdata(lastEvents + 2));
+datatable.correct = cellfun(@(x) startsWith(x, 'Correct'),...
+    trialdata(feedback));
 
 %% get subject and trial level info
 
-% get worker id's
-workerIDs = alldata{:, 1};
-
 % 2nd argument for repelem: number of sequences for each participant (maybe
 % accummulate array when loading in for loop at beginning of function)
-datatable.workerID = workerIDs(lastEvents);
+datatable.subjID = repelem(unique(csvtable.subjIDs),numSeqs);
 
 % save trial IDs (trials that were stopped such that the same sequences
 % appeared, i.e. they couldve gone on to be different)
