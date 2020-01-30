@@ -31,7 +31,7 @@ datatable.response = cellfun(@(x) str2double(extractBetween(x, '"Q0\":', '}')) +
     trialdata(likert));
 
 % add list of worker ids
-[workerIDs, ~, pos] = unique(alldata{:, 1}, 'stable');
+[workerIDs, ~, pos] = unique(alldata{:, 1});
 
 trialsPerWorker = pos(trials);
 
@@ -42,6 +42,6 @@ passedBotCheck = cellfun(@(x) contains(x, 'green') &...
     (contains(x, 'round') | contains(x, 'circle')), trialdata(botcheck));
 
 % find indices of different workers and fill with botcheck
-datatable.passedCheck = passedBotCheck(trialsPerWorker);
+datatable.passedCheck = passedBotCheck(sort(trialsPerWorker));
 
 [~, ~, datatable.trialID] = uniqueRowsCA(datatable.stimulus);

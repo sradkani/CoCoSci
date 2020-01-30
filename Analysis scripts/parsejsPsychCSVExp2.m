@@ -9,7 +9,7 @@ datatable = table();
 trialdata = alldata{:, 4}; 
 
 % booleans indicating instructions, trial, prediction question or feedback window
-instructions = contains(trialdata, '"test_part": "instructions"');
+botcheck = contains(trialdata, '"test_part": "botcheck"');
 trials = contains(trialdata, '"test_part": "test"');
 training = contains(trialdata, '"test_part": "training"');
 prediction = contains(trialdata, '"test_part": "prediction"');
@@ -51,9 +51,17 @@ datatable.correct = cellfun(@(x) contains(x, 'Correct'),...
 % get worker id's
 workerIDs = alldata{:, 1};
 
-% 2nd argument for repelem: number of sequences for each participant (maybe
-% accummulate array when loading in for loop at beginning of function)
+% insert workerID
 datatable.workerID = workerIDs(lastEvents);
+
+% check whether participants answered the botcheck right
+passedBotCheck = cellfun(@(x) contains(x, 'green') &...
+    (contains(x, 'round') | contains(x, 'circle')), trialdata(botcheck));
+
+% find indices of different workers and fill with botcheck
+passedCheck = repelem(passedBotCheck, diff([find(botcheck), length(botcheck) + 1])).';
+
+datatable.passedCheck = passedCheck(lastEvents);
 
 % save trial IDs (trials that were stopped such that the same sequences
 % appeared, i.e. they couldve gone on to be different)
