@@ -24,13 +24,16 @@ for i = 1:maxMotifLength
         % add number of states from previous motif lengths
         numPrevStates = sum(prod(motifSizes(1:i-1,:), 2));
         pointers = pointers + numPrevStates;
-
-          % get index for all within motif states
-        idx = [(1+numPrevStates:max(pointers(:))).', reshape(pointers.', 1, []).'];
+        
+        
+        % range to populate in this iteration
+        rangeToPopulate = (1+numPrevStates:max(pointers(:)));
+        
 
         % populate columns with C*a.^(length of motif this state is a part of), 
         % some will later be replaced with 0 or delta
-        transitionMat(:,1+numPrevStates:max(pointers(:))) = C * alpha^i; 
+        transitionMat(:,1+numPrevStates:max(pointers(:))) =...
+            repmat(C .* alpha^i, [1 length(rangeToPopulate)]); 
 
         % insert 0's for mid motif states (they can only be reached through
         % within motif transitions)
@@ -40,6 +43,9 @@ for i = 1:maxMotifLength
             transitionMat(:, nonBeginnerIdx(:)) = 0;
         end
 
+        % get index for all within motif states
+        idx = [rangeToPopulate.', reshape(pointers.', 1, []).'];
+        
         % convert to linear index to insert targeted deltas
         transitionMat(sub2ind(size(transitionMat),idx(:,1), idx(:,2))) = delta;
 

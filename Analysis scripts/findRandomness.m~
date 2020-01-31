@@ -36,8 +36,8 @@ function [random_X] = findRandomness(alphabet, maxMotifLength, sequences, delta,
     end
     
 %% generate transition matrix
-
     % compute denominators for C (sum over number of motifs times alpha^length)
+    
     motifs = generateMotifs('ABC', 3);
     
     % get number of non-zero entries for each motif size
@@ -47,20 +47,18 @@ function [random_X] = findRandomness(alphabet, maxMotifLength, sequences, delta,
     % length i, delta will replace one of the C*a^i)
     coeffs = repmat(nonZero, [maxMotifLength 1]) - eye(maxMotifLength);
     
-    % multiply with alpha^i where i = motiflength
-    denom = coeffs * alpha.^(1:maxMotifLength).';
+    % multiply with alpha^i where i l
     
-    % generate C (will have dimensions maxMotifLength x 1)
-    C = (1-delta) ./ denom;
-    
-    % repeat (first 3 rows will have first entry of C, 12 will have second
-    % etc.)
-    C = repelem(C, cellfun(@(x) numel(x), motifs));
+    denom = nan(1, maxMotifLength);
+
+    % (1-delta)/ 
+    % (3 .* alpha.^1 + 6 * alpha.^2 + ... + numOfMaxLengthMotifs * alpha^maxMotifLength)
+    C = (1-delta) ./ sum(cell2mat(denom'), 1);
     
     transitionMat = generateTransitionMat(...
         motifs, motifSizes, numStates, maxMotifLength, alpha, delta, C);
 
-    prior = [C(1).*alpha, transitionMat(1,2:end)];     
+    prior = [C.*alpha, transitionMat(1,2:end)];     
     TRANS_HAT = [0 prior; zeros(size(transitionMat,1),1) transitionMat];
     EMIS_HAT = [zeros(1,size(emissions,2)); emissions];
     
