@@ -27,7 +27,7 @@ if paramRange
     end
     
     % two gaussians 
-    deltas = [0.2+0.6*randn(1, numSeqs/2) (0.2*randn(1, numSeqs/2) + 0.95)];
+    deltas = [0.2+0.6*randn(1, numSeqs/2), (0.2*randn(1, numSeqs/2) + 0.95)];
     
     % set values below 0 and above 1 to 0.01 and 0.99
     deltas(deltas <= 0) = 0.01;
@@ -145,7 +145,7 @@ end
 sequences = sequences(randperm(size(sequences, 1)),: );
 
 %csvwrite('states.csv', states)
-% csvwrite('Experiment/sequencesExp2.csv', sequences)
+csvwrite('/Users/galraz1/Developer/CoCoSci/Experiment2/sequencesExp2.csv', sequences)
 %csvwrite('deltas.csv', deltas)
 %csvwrite('alphas.csv', alphas)
 
