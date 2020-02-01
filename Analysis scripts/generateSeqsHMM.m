@@ -30,8 +30,8 @@ if paramRange
     deltas = [0.2+0.6*randn(1, numSeqs/2), (0.2*randn(1, numSeqs/2) + 0.95)];
     
     % set values below 0 and above 1 to 0.01 and 0.99
-    deltas(deltas <= 0) = 0.01;
-    deltas(deltas >= 1) = 0.99;
+    deltas(deltas <= 0.01) = 0.01;
+    deltas(deltas >= 0.99) = 0.99;
     
     alphas = rand(1,numSeqs);
 else

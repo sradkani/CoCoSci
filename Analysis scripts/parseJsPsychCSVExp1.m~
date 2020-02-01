@@ -1,4 +1,4 @@
-function datatable = parseJsPsychCSVExp1(excludeOutliers)
+function datatable = parseJsPsychCSVExp1()
 
 alldata = readtable('Experiment1/mTurkExp1/trialdata.csv');
 
@@ -40,7 +40,7 @@ datatable.workerID = workerIDs(trialsPerWorker);
 datatable.workerNum = trialsPerWorker;
 
 % check whether participants answered the botcheck right
-passedBotCheck = cellfun(@(x) (contains(x, 'green') | contains(x, 'dot')) &...
+passedBotCheck = cellfun(@(x) contains(x, 'green') &...
     (contains(x, 'round') | contains(x, 'circle')), trialdata(botcheck));
 
 % find indices of different workers and fill with botcheck
@@ -52,19 +52,9 @@ datatable.passedCheck = passedBotCheck(trialsPerWorker);
 medianResponse = median(datatable.response);
 
 medianPerWorker = accumarray(datatable.workerNum, datatable.response, [], @median);
-MAD = median(abs(medianPerWorker - median(medianPerWorker)));
+MAD = median(medianPerWorker - median(medianPerWorker));
 
-outlier = medianPerWorker < (medianResponse - 3*MAD) | ...
-    medianPerWorker > (medianResponse + 3*MAD);
-
-datatable.outlier = outlier(trialsPerWorker);
-
-if excludeOutliers
-    datatable = datatable(~datatable.outlier, :);
-    datatable = datatable(~contains(datatable.workerID, 'debug'), :);
-end
-
-% keep only those that passed the bot check
-datatable = datatable(datatable.passedCheck,:);
+datatable.outlier = medianPerWorker < (medianResponse - 3*MAD) | ...
+    datatable.response > (medianResponse + 3*MAD);
 
 save('Exp1_Results.mat', 'datatable')

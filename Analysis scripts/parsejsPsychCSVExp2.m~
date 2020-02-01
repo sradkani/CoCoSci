@@ -55,7 +55,7 @@ workerIDs = alldata{:, 1};
 datatable.workerID = workerIDs(lastEvents);
 
 % check whether participants answered the botcheck right
-passedBotCheck = cellfun(@(x) (contains(x, 'green') | contains(x, 'dot')) &...
+passedBotCheck = cellfun(@(x) (contains(x, 'green') |&...
     (contains(x, 'round') | contains(x, 'circle')), trialdata(botcheck));
 
 % find indices of different workers and fill with botcheck
@@ -66,8 +66,3 @@ datatable.passedCheck = passedCheck(lastEvents);
 % save trial IDs (trials that were stopped such that the same sequences
 % appeared, i.e. they couldve gone on to be different)
 [~, ~, datatable.trialID] = uniqueRowsCA(datatable.sequences);
-
-% keep only those that passed the check
-datatable = datatable(datatable.passedCheck,:);
-
-save('Exp2_Results.mat', 'datatable')

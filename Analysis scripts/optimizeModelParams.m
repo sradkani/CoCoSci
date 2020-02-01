@@ -1,4 +1,4 @@
-function [modelParams, optCorr_each, optCorr_avg, modelHumanCorr_each, modelHumanCorr_avg] = optimizeModelParams(sequences, subjRand_human, alphabet, maxMotifLength, delta0, alpha0)
+function [modelParams, optCorr_each, optCorr_avg, modelHumanCorr_each, modelHumanCorr_avg] = optimizeModelParams(sequences, subjRand_human, alphabet, maxMotifLength)
     
     modelParams.alphabet = alphabet;
     modelParams.maxMotifLength = maxMotifLength;
