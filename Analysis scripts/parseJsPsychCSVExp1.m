@@ -1,5 +1,3 @@
-function datatable = parseJsPsychCSVExp1
-
 alldata = readtable('Experiment1/mTurkExp1/trialdata.csv');
 
 % here the final table will be stored
@@ -45,3 +43,5 @@ passedBotCheck = cellfun(@(x) contains(x, 'green') &...
 datatable.passedCheck = passedBotCheck(trialsPerWorker);
 
 [~, ~, datatable.trialID] = uniqueRowsCA(datatable.stimulus);
+
+save('Exp1_Results.mat', 'datatable')
