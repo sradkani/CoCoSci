@@ -38,3 +38,5 @@ xlabel('delta');
 ylabel('alpha');
 title('model - average human correlation')
 
+save('plots/modelHumanCorr_each.mat', 'modelHumanCorr_each')
+save('plots/modelHumanCorr_avg.mat', 'modelHumanCorr_avg')

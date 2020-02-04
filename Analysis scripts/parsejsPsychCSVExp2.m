@@ -59,15 +59,19 @@ passedBotCheck = cellfun(@(x) (contains(x, 'green') | contains(x, 'dot')) &...
     (contains(x, 'round') | contains(x, 'circle')), trialdata(botcheck));
 
 % find indices of different workers and fill with botcheck
-passedCheck = repelem(passedBotCheck, diff([find(botcheck), length(botcheck) + 1])).';
+%passedCheck = repelem(passedBotCheck, diff([find(botcheck), length(botcheck) + 1])).';
 
-datatable.passedCheck = passedCheck(lastEvents);
+% datatable.passedCheck = passedCheck(lastEvents);
 
 % save trial IDs (trials that were stopped such that the same sequences
 % appeared, i.e. they couldve gone on to be different)
 [~, ~, datatable.trialID] = uniqueRowsCA(datatable.sequences);
 
 % keep only those that passed the check
-datatable = datatable(datatable.passedCheck,:);
+% datatable = datatable(datatable.passedCheck,:);
+
+datatable = datatable(cellfun(@length, datatable.sequences) ~= 29, :)
+datatable = datatable(cellfun(@length, datatable.sequences) > 2, :)
+
 
 save('Exp2_Results.mat', 'datatable')

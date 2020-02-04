@@ -10,6 +10,10 @@
     sequences = datatable.sequences;
     seqlengths = cellfun(@length, sequences)';
 
+    % remove sequences of length 1 
+    sequences = sequences(seqlengths > 2, :);
+    seqlengths = cellfun(@length, sequences).';
+    
     if any(seqlengths == 30)
         error('there are sequences that were not terminated, write code to handle this before proceeding')
     end

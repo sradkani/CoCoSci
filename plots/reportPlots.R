@@ -2,7 +2,8 @@ library(tidyverse)
 library(lmtest)
 library(Rmisc)
 library(R.matlab)
-setwd("/Users/galraz1/Developer/CoCoSci")
+library(tseries)
+setwd("/Users/galraz1/Developer/CoCoSci/Analysis scripts")
 df1 <- data.frame(read_csv('Rdata.csv'))
 
 # lineplot randomXbins vs disengaged
@@ -11,8 +12,10 @@ ggplot(df1, aes(binMeans, propDisengaged)) + geom_line()+
 
 df2 <- data.frame(read_csv('Rdata2.csv'))
 
+df2$quad <- df2$diffs^2
+
 mylogit <- glm(disengaged ~ eventpos, data = df2, family = "binomial")
-mylogit2 <- glm(disengaged ~ eventpos + log(diffs), data = df2, family = "binomial")
+mylogit2 <- glm(disengaged ~ eventpos + CT, data = df2, family = "binomial")
 mylogit3 <- glm(disengaged ~ diffs, data = df2, family = "binomial")
 
 lrtest(mylogit, mylogit2)
@@ -44,8 +47,8 @@ ggplot(df2, aes(eventpos, diffs)) + geom_point() +
         axis.text.x = element_text(size=16),
         axis.text.y = element_text(size=16)) 
 
-ggplot(df2,  aes(diffs, disengaged)) + geom_point(position='jitter') + 
-  xlab(expression(Delta~random(x))) + ylab('P(disengage)') +
+ggplot(df2,  aes(eventpos, disengaged)) + geom_point(position='jitter') + 
+  xlab('eventpos') + ylab('P(disengage)') +
   theme_bw() + 
   theme(panel.grid.minor = element_blank(), 
         plot.title = element_text(hjust=0.5, size=26, face="bold"),
@@ -57,7 +60,8 @@ ggplot(df2,  aes(diffs, disengaged)) + geom_point(position='jitter') +
 
 
 # boxplot change in randomX for disengaged vs engaged 
-ggplot(df2, aes(x=as.factor(disengaged), y=diffs)) + geom_boxplot()
+ggplot(df2, aes(x=as.factor(disengaged), y=diffs)) + 
+  geom_boxplot() + geom_point()
 
 
 curves <- data.frame(read_csv('curveRData.csv'))
@@ -100,7 +104,6 @@ ggplot(curves, aes(x=1:29, y=curve3)) + geom_line(size = 1.4) +
 
 
 avg <- as.numeric(unlist(readMat('modelHumanCorr_avg.mat')))
-avg[avg < 0.3] = 0.3
 
 each <- as.numeric(unlist(readMat('modelHumanCorr_each.mat')))
 each[each < 0.1] <- 0.1
@@ -113,8 +116,7 @@ data$rho <- avg
 
 # Heatmap 
 ggplot(data, aes(X, Y, fill= rho)) + 
-  geom_tile() + scale_fill_gradient2(low="grey", mid="blue", high="red",
-                                     midpoint = 0.6) +
+  geom_tile() + scale_fill_gradient2(low="white", mid="blue", high="red") +
   xlim(0.05, 0.95) + ylim(0.25, 0.95) + xlab(expression(alpha)) +
   ylab(expression(delta)) + 
   theme_classic() + 
@@ -135,8 +137,8 @@ data <- expand.grid(X=alpha, Y=delta)
 data$rho <- each
 
 ggplot(data, aes(X, Y, fill= rho)) + 
-  geom_tile() + scale_fill_gradient2(low="grey", mid="blue", high="red",
-                                       midpoint = 0.4) +
+  geom_tile() + scale_fill_gradient2(low="black", mid="blue", high="white",
+                                       midpoint = 0.5) +
   xlim(0.05, 0.95) + ylim(0.25, 0.95) + xlab(expression(alpha)) +
   ylab(expression(delta)) + 
   theme_classic() + 

@@ -9,15 +9,19 @@ function [maxRandomX, maxSeq] = findMaxRandomX(alphabet, seqLength, maxMotifLeng
     % for small alphabet size and sequence length we can generate all
     % possible sequences, otherwise we will sample from all possible
     % sequences that are generated from a fair alphabetSize coin!
-    if sizeAlphabet^seqLength < 5000
-        sequences = permn(alphabet, seqLength);
-    else
-        idx = randi(sizeAlphabet, 5000, seqLength);
-        sequences = arrayfun(@(x) alphabet(x), idx);
-    end
+%     if sizeAlphabet^seqLength < 5000
+%         sequences = permn(alphabet, seqLength);
+%     else
+%         idx = randi(sizeAlphabet, 5000, seqLength);
+%         sequences = arrayfun(@(x) alphabet(x), idx);
+%     end
+
+    idx = randi(sizeAlphabet, 5000, seqLength);
+    sequences = arrayfun(@(x) alphabet(x), idx);
     
     random_Xs = findRandomness(alphabet, maxMotifLength, sequences, delta, alpha);
-    [maxRandomX, maxIdx] = max(random_Xs);
-    maxSeq = sequences(maxIdx,:);
+%     [maxRandomX, maxIdx] = max(random_Xs);
+%     maxSeq = sequences(maxIdx,:);
+    maxRandomX = max(random_Xs);
     
 end

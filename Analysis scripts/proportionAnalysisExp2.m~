@@ -79,13 +79,13 @@ else
 end
 
 % flatten diff curves and take absolute value
-diffs = cell2mat(cellfun(@transpose, diffcurves, 'UniformOutput', false));
+diffs = abs(cell2mat(cellfun(@transpose, diffcurves, 'UniformOutput', false)));
         
 % complexity tracker
 CT = abs(cell2mat(complexity_tracker))';
 
 % get event positions
-eventpos = cell2mat(cellfun(@(x) (1:length(x))', diffcurves, 'UniformOutput', false));
+eventpos = cell2mat(cellfun(@(x) (1:length(x)), complexity_tracker, 'UniformOutput', false))';
 
 % get disengagement (1 = disengaged, 0 = continued)
 disengaged = ismember(1:sum(seqlengths), cumsum(seqlengths));
@@ -118,10 +118,10 @@ if remove1st
 end
 
 % pool diff curves in bins
-pooledg = quantile(diffs,0:0.2:1);
-linedges = linspace(min(diffs), max(diffs), 6);
+pooledg = quantile(CT,0:0.2:1);
+linedges = linspace(min(CT), max(CT), 6);
 
-[bins, edges] = discretize(diffs, pooledg);
+[bins, edges] = discretize(CT, pooledg);
 
 proportionDisengaged = accumarray(bins, disengaged, [], @mean);
 stdErrorDisengaged = accumarray(bins, disengaged, [], @(x) std(x) ./ sqrt( length(x)));
@@ -137,7 +137,7 @@ else
     xlabel('random(x)', 'FontSize', 20)
 end
 
-ylabel('length', 'FontSize', 20)
+ylabel('event pos', 'FontSize', 20)
 
 
 % get trial position as a function of random x
@@ -151,7 +151,7 @@ end
 
 ylabel('Proportion disenganged', 'FontSize', 20) 
 
-[coeffs,dev,stats] = mnrfit([eventpos diffs], disengaged + 1);
+[coeffs,dev,stats] = mnrfit([eventpos CT], disengaged + 1);
 model_predictions = mnrval(coeffs, [eventpos diffs]);
 [~,~,~,auc] = perfcurve(disengaged + 1, model_predictions(:,2), 2);  
 
@@ -159,7 +159,6 @@ plottable = table();
 
 plottable.disengaged = disengaged;
 plottable.diffs = diffs;
-
 plottable.binMeans = binMeans(bins);
 
 plottable.eventpos = eventpos;

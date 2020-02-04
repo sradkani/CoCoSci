@@ -77,6 +77,6 @@ function [random_X] = findRandomness(alphabet, maxMotifLength, sequences, delta,
         % the base of logarithm scales the randomness measure
         % for now use natural logarithm
         l_X = length(sequences(seq,:));
-        random_X(seq) = -l_X - log(P_X_regular);
+        random_X(seq) = -l_X - log(P_X_regular)/log(3);
    end
 end
