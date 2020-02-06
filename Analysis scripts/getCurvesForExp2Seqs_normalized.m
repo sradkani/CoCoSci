@@ -1,13 +1,14 @@
-function curves = getCurvesForExp2Seqs(alphabet, maxMotifLength, delta, alpha)
+function curves = getCurvesForExp2Seqs_normalized(alphabet, maxMotifLength, delta, alpha, smooth)
 % gets curves for exp2 sequences
 % tries to find file in folder, if it's not there, it computes it itself
+
 
 sequences = cell2mat(cellfun(@(x) strrep(x,',',''),...
     importdata('sequencesExp2.csv'), 'UniformOutput', false));
 
-try
-maxRandomX = importdata(sprintf('maxRandomX_delta%.2f_alpha%.2f.mat', delta, alpha));
-catch
+ try
+ maxRandomX = importdata(sprintf('maxRandomX_delta%.2f_alpha%.2f.mat', delta, alpha));
+ catch
     warning('maxRandomX not stored for these parameter settings. Computing them now, which might take longer')
     maxRandomX = nan(1, size(sequences, 2));
 
@@ -15,21 +16,27 @@ catch
     for i = 2:size(sequences, 2)
         maxRandomX(i-1) = findMaxRandomX(alphabet, i, maxMotifLength, delta, alpha);
     end
-end
+ end
 
 curves = nan(size(sequences, 1), size(sequences, 2)-1);
 
+
 for i = 1:size(sequences,1)
     if smooth
-        curves(i,:) = movmean(randomXCurve(...
+        curves(i,:) = movmean(randomXCurve_normalized(...
             alphabet, maxMotifLength, sequences(i,:), maxRandomX, delta, alpha), 3);
+    else
+        curves(i,:) = randomXCurve_normalized(...
+            alphabet, maxMotifLength, sequences(i,:),maxRandomX, delta, alpha);
 
+    end
 end
 
 figure;
 for i = 1:25
     subplot(5,5,i)
-    plot(1:size(curves, 2), curves(i,:), 'LineWidth', 2)
+    plot(1:size(curves, 2), curves(i,:), 'LineWidth', 2); hold on;
+%     plot(1:size(curves,2), movmean(maxRandomX,3), 'LineWidth',2)
     title(sequences(i,:), 'FontSize', 9)
 end
 

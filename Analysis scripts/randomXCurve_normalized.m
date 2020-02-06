@@ -1,4 +1,4 @@
-function curve = randomXCurve(alphabet, maxMotifLength, sequence, delta, alpha)
+function curve = randomXCurve_normalized(alphabet, maxMotifLength, sequence, maxRandomX, delta, alpha)
 % takes as input the sequence and parameters for the inferring HMM and 
 % returns a curve of random(X) for each point in the  sequence 
 % (starting from the 2nd state)
@@ -11,8 +11,7 @@ for i = 1:length(sequence)-1
     
     curve(i) = findRandomness(alphabet, maxMotifLength, sequence(1:i+1), delta, alpha);
     
-    curve(i) = curve(i);% ./ movmean(maxRandomX(i), 5);
-
+    curve(i) = curve(i)/maxRandomX(i);
 end
 
 

@@ -1,6 +1,7 @@
-function curves = getCurvesForExp2Seqs(alphabet, maxMotifLength, delta, alpha, smooth)
+function curves = getCurvesForExp2Seqs_unnormalized(alphabet, maxMotifLength, delta, alpha, smooth)
 % gets curves for exp2 sequences
 % tries to find file in folder, if it's not there, it computes it itself
+
 
 sequences = cell2mat(cellfun(@(x) strrep(x,',',''),...
     importdata('sequencesExp2.csv'), 'UniformOutput', false));
@@ -19,12 +20,13 @@ sequences = cell2mat(cellfun(@(x) strrep(x,',',''),...
 
 curves = nan(size(sequences, 1), size(sequences, 2)-1);
 
+
 for i = 1:size(sequences,1)
     if smooth
-        curves(i,:) = movmean(randomXCurve(...
+        curves(i,:) = movmean(randomXCurve_unnormalized(...
             alphabet, maxMotifLength, sequences(i,:), delta, alpha), 3);
     else
-        curves(i,:) = randomXCurve(...
+        curves(i,:) = randomXCurve_unnormalized(...
             alphabet, maxMotifLength, sequences(i,:), delta, alpha);
 
     end
