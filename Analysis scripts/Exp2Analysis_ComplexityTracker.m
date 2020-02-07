@@ -106,9 +106,18 @@ function [coeffs,dev,stats, AUCs] = Exp2Analysis_ComplexityTracker(alphabet, max
         %% fit the model to the training data
         [coeffs,dev,stats] = mnrfit([ eventpos  CT],  disengaged + 1);
 
-        
-        
-        
+        plottable = table();
+
+        plottable.disengaged = disengaged;
+        plottable.CT = CT;
+
+        plottable.binMeans = binMeans(bins);
+
+        plottable.eventpos = eventpos;
+
+        writetable(plottable, 'Rdata_CT.csv')
+
+
     end
 
     

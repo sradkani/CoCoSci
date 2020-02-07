@@ -79,7 +79,7 @@ if remove1st
 end
 
 % pool diff curves in bins
-pooledg = quantile(diffs,0:0.2:1);
+pooledg = quantile(diffs,0:0.1:1);
 linedges = linspace(min(diffs), max(diffs), 6);
 
 [bins, edges] = discretize(diffs, pooledg);
@@ -116,4 +116,4 @@ plottable.binMeans = binMeans(bins);
 
 plottable.eventpos = eventpos;
 
-writetable(plottable, 'Rdata2.csv')
+writetable(plottable, 'Rdata_deltaRandomX.csv')

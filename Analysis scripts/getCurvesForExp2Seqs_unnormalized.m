@@ -41,6 +41,37 @@ for i = 1:25
 end
 
 
+% example determinstic sequence
+figure;
+plot(1:size(curves, 2), curves(1,:), 'LineWidth', 2); 
+xlabel('Sequence position', 'FontSize', 20)
+ylabel('random(x) normalized','FontSize', 20 )
+title(sequences(1,:), 'FontSize', 24)
+
+% example intermediate sequence
+figure;
+plot(1:size(curves, 2), curves(13,:), 'LineWidth', 2); 
+xlabel('Sequence position', 'FontSize', 20)
+ylabel('random(x) normalized','FontSize', 20 )
+title(sequences(13,:), 'FontSize', 24)
+
+% example violation sequence
+figure;
+plot(1:size(curves, 2), curves(6,:), 'LineWidth', 2); 
+xlabel('Sequence position', 'FontSize', 20)
+ylabel('random(x) normalized','FontSize', 20 )
+title(sequences(6,:), 'FontSize', 24)
+
+
+% example random sequence
+figure;
+plot(1:size(curves, 2), curves(15,:), 'LineWidth', 2); 
+xlabel('Sequence position', 'FontSize', 20)
+ylabel('random(x) normalized','FontSize', 20 )
+title(sequences(15,:), 'FontSize', 24)
+
+
+
 figure;
 for i = 1:25
     subplot(5,5,i)

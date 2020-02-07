@@ -10,18 +10,6 @@ df1 <- data.frame(read_csv('Rdata.csv'))
 ggplot(df1, aes(binMeans, propDisengaged)) + geom_line()+
   geom_point() + geom_errorbar(data=df1, y=stdErrorDisengaged)
 
-df2 <- data.frame(read_csv('Rdata2.csv'))
-
-df2$quad <- df2$diffs^2
-
-mylogit <- glm(disengaged ~ eventpos, data = df2, family = "binomial")
-mylogit2 <- glm(disengaged ~ eventpos + CT, data = df2, family = "binomial")
-mylogit3 <- glm(disengaged ~ diffs, data = df2, family = "binomial")
-
-lrtest(mylogit, mylogit2)
-lrtest(mylogit2, mylogit3)
-
-
 tgc <- summarySE(df2, measurevar="disengaged", groupvars=c('binMeans'))
 
 # dotplot for logistic regression

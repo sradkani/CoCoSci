@@ -33,10 +33,13 @@ title('model - human correlation')
 figure(2)
 clims = [0.4, 0.9];
 imagesc([0.25, 0.95], [0.05, 0.95], modelHumanCorr_avg, clims)
-colorbar
-xlabel('delta');
-ylabel('alpha');
-title('model - average human correlation')
+h = colorbar;
+ylabel(h, 'Correlation', 'FontSize', 26)
+xlabel('delta', 'FontSize', 26);
+ylabel('alpha', 'FontSize', 26);
+ax = gca;
+ax.FontSize = 20;
+title('model - average human correlation', 'FontSize', 34);
 
 save('plots/modelHumanCorr_each.mat', 'modelHumanCorr_each')
 save('plots/modelHumanCorr_avg.mat', 'modelHumanCorr_avg')

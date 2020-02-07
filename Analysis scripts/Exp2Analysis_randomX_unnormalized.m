@@ -87,7 +87,7 @@ binMeans = (0.5 * (edges(1:end-1) + edges(2:end)))';
 figure;
 plot(randomx, eventpos,  'ro', 'LineWidth', 3)
 xlabel('random(x)', 'FontSize', 20)
-ylabel('length', 'FontSize', 20)
+ylabel('event position', 'FontSize', 20)
 
 
 % get trial position as a function of random x
@@ -103,11 +103,11 @@ model_predictions = mnrval(coeffs, [eventpos randomx]);
 plottable = table();
 
 plottable.disengaged = disengaged;
-plottable.diffs = randomx;
+plottable.randomx = randomx;
 
 plottable.binMeans = binMeans(bins);
 
 plottable.eventpos = eventpos;
 
-writetable(plottable, 'Rdata2.csv')
+writetable(plottable, 'Rdata_randomX_unnormalized.csv')
 

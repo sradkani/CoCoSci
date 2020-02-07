@@ -103,11 +103,11 @@ model_predictions = mnrval(coeffs, [eventpos randomx]);
 plottable = table();
 
 plottable.disengaged = disengaged;
-plottable.diffs = randomx;
+plottable.randomx = randomx;
 
 plottable.binMeans = binMeans(bins);
 
 plottable.eventpos = eventpos;
 
-writetable(plottable, 'Rdata2.csv')
+writetable(plottable, 'Rdata_randomX_normalized.csv')
 
