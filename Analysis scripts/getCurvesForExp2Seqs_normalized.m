@@ -58,10 +58,10 @@ title(sequences(1,:), 'FontSize', 24)
 
 % example intermediate sequence
 figure;
-plot(1:size(curves, 2), curves(13,:), 'LineWidth', 2); 
+plot(1:size(curves, 2), curves(25,:), 'LineWidth', 2); 
 xlabel('Sequence position', 'FontSize', 20)
 ylabel('random(x) normalized','FontSize', 20 )
-title(sequences(13,:), 'FontSize', 24)
+title(sequences(25,:), 'FontSize', 24)
 
 % example violation sequence
 figure;

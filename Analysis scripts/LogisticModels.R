@@ -15,7 +15,7 @@ df_deltarandomx$quad = df_deltarandomx$diffs^2
 mylogit_delta <- glm(disengaged ~ quad + diffs + eventpos, data = df_deltarandomx, family = "binomial")
 
 df_randomX_normalized$quad = df_randomX_normalized$randomx^2
-mylogit_randomx_norm <- glm(disengaged ~ quad + randomx + eventpos, data = df_randomX_normalized, family = "binomial")
+mylogit_randomx_norm <- glm(disengaged ~  randomx + eventpos, data = df_randomX_normalized, family = "binomial")
 
 df_randomX_unnormalized$quad = df_randomX_unnormalized$randomx^2
 mylogit_randomx_unnorm <- glm(disengaged ~ quad + randomx + eventpos, data = df_randomX_unnormalized, family = "binomial")

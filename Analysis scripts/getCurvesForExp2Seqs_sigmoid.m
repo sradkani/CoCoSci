@@ -1,4 +1,4 @@
-function curves = getCurvesForExp2Seqs_normalized(alphabet, maxMotifLength, delta, alpha, smooth)
+function curves = getCurvesForExp2Seqs_sigmoid(alphabet, maxMotifLength, delta, alpha, smooth)
 % gets curves for exp2 sequences
 % tries to find file in folder, if it's not there, it computes it itself
 
@@ -23,23 +23,14 @@ curves = nan(size(sequences, 1), size(sequences, 2)-1);
 
 for i = 1:size(sequences,1)
     if smooth
-        curves(i,:) = movmean(randomXCurve_normalized(...
-            alphabet, maxMotifLength, sequences(i,:), maxRandomX, delta, alpha), 3);
+        curves(i,:) = movmean(randomXCurve_sigmoid(...
+            alphabet, maxMotifLength, sequences(i,:), delta, alpha), 3);
     else
-        curves(i,:) = randomXCurve_normalized(...
-            alphabet, maxMotifLength, sequences(i,:),maxRandomX, delta, alpha);
+        curves(i,:) = randomXCurve_sigmoid(...
+            alphabet, maxMotifLength, sequences(i,:), delta, alpha);
 
     end
 end
-
-figure;
-for i = 1:25
-    subplot(5,5,i)
-    plot(1:size(curves, 2), curves(i,:), 'LineWidth', 2); hold on;
-%     plot(1:size(curves,2), movmean(maxRandomX,3), 'LineWidth',2)
-    title(sequences(i,:), 'FontSize', 9)
-end
-
 
 figure;
 for i = 1:25
@@ -53,21 +44,21 @@ end
 figure;
 plot(1:size(curves, 2), curves(1,:), 'LineWidth', 2); 
 xlabel('Sequence position', 'FontSize', 20)
-ylabel('random(x) normalized','FontSize', 20 )
+ylabel('random(x) sigmoid','FontSize', 20 )
 title(sequences(1,:), 'FontSize', 24)
 
 % example intermediate sequence
 figure;
-plot(1:size(curves, 2), curves(13,:), 'LineWidth', 2); 
+plot(1:size(curves, 2), curves(25,:), 'LineWidth', 2); 
 xlabel('Sequence position', 'FontSize', 20)
-ylabel('random(x) normalized','FontSize', 20 )
-title(sequences(13,:), 'FontSize', 24)
+ylabel('random(x) sigmoid','FontSize', 20 )
+title(sequences(25,:), 'FontSize', 24)
 
 % example violation sequence
 figure;
 plot(1:size(curves, 2), curves(6,:), 'LineWidth', 2); 
 xlabel('Sequence position', 'FontSize', 20)
-ylabel('random(x) normalized','FontSize', 20 )
+ylabel('random(x) sigmoid','FontSize', 20 )
 title(sequences(6,:), 'FontSize', 24)
 
 
@@ -75,16 +66,16 @@ title(sequences(6,:), 'FontSize', 24)
 figure;
 plot(1:size(curves, 2), curves(15,:), 'LineWidth', 2); 
 xlabel('Sequence position', 'FontSize', 20)
-ylabel('random(x) normalized','FontSize', 20 )
+ylabel('random(x) sigmoid','FontSize', 20 )
 title(sequences(15,:), 'FontSize', 24)
 
-
-figure;
-for i = 1:25
-    subplot(5,5,i)
-    plot(1:size(curves, 2)-1, abs(diff(curves(i,:))), 'LineWidth', 2)
-    title(sequences(i,:), 'FontSize', 9)
-end
+% 
+% figure;
+% for i = 1:25
+%     subplot(5,5,i)
+%     plot(1:size(curves, 2)-1, abs(diff(curves(i,:))), 'LineWidth', 2)
+%     title(sequences(i,:), 'FontSize', 9)
+% end
 
 
 %% save example curve
