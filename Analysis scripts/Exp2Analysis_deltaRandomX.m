@@ -47,7 +47,7 @@ end
   
 
 % flatten diff curves and take absolute value
-diffs = cell2mat(cellfun(@transpose, diffcurves, 'UniformOutput', false));
+diffs = abs(cell2mat(cellfun(@transpose, diffcurves, 'UniformOutput', false)));
         
 % get event positions
 eventpos = cell2mat(cellfun(@(x) (1:length(x))', diffcurves, 'UniformOutput', false));
@@ -85,22 +85,23 @@ linedges = linspace(min(diffs), max(diffs), 6);
 [bins, edges] = discretize(diffs, pooledg);
 
 proportionDisengaged = accumarray(bins, disengaged, [], @mean);
-stdErrorDisengaged = accumarray(bins, disengaged, [], @(x) std(x) ./ sqrt( length(x)));
+stdErrorDisengaged = accumarray(bins, disengaged, [], @(x) std(x) ./ sqrt(length(x)));
 
 binMeans = (0.5 * (edges(1:end-1) + edges(2:end)))';
 
 % binning random(x) values and get mean proportion of disengaged
 figure;
-plot(diffs, eventpos,  'ro', 'LineWidth', 3)
+plot(diffs, eventpos,  'ro', 'LineWidth', 4)
+set(gca, 'FontSize', 12); box off
 xlabel('Change in random(x)', 'FontSize', 20)
 ylabel('event position', 'FontSize', 20)
 
 
 % get trial position as a function of random x
 figure;
-plot(binMeans, proportionDisengaged,  'ro-', 'LineWidth', 3)
+errorbar(binMeans, proportionDisengaged, stdErrorDisengaged, 'bo-', 'LineWidth', 3)
+set(gca, 'FontSize', 12); box off
 xlabel('Change in random(x)', 'FontSize', 20)
-
 ylabel('Proportion disenganged', 'FontSize', 20) 
 
 [coeffs,dev,stats] = mnrfit([eventpos diffs], disengaged + 1);
@@ -113,6 +114,7 @@ plottable.disengaged = disengaged;
 plottable.diffs = diffs;
 
 plottable.binMeans = binMeans(bins);
+plottable.err = stdErrorDisengaged(bins);
 
 plottable.eventpos = eventpos;
 
