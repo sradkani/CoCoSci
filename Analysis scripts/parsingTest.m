@@ -1,4 +1,3 @@
-function datatable =  parsejsPsychCSVExp2
 
 alldata = readtable('Experiment2/mTurkExp2/trialdata.csv');
 
@@ -10,8 +9,10 @@ trialdata = alldata{:, 4};
 
 % booleans indicating instructions, trial, prediction question or feedback window
 botcheck = contains(trialdata, '"test_part": "botcheck"');
-trials = contains(trialdata, '"test_part": "training"');
-betweenseqs = contains(trialdata, '"test_part": "between_sequences"');
+trials = contains(trialdata, '"test_part": "test"');
+training = contains(trialdata, '"test_part": "training"');
+prediction = contains(trialdata, '"test_part": "prediction"');
+feedback = contains(trialdata, '"test_part": "feedback"');
 
 % get index of last event of each sequence
 lastEvents = find(diff([0 trials']) == -1) - 1;
@@ -22,26 +23,27 @@ firstEvents = find(diff([0 trials']) == 1);
 % indices ranging between events
 sequences = cell(length(firstEvents), 1);
 for i = 1:length(firstEvents)
-    sequences{i} = cellfun(@(x) cell2mat(extractBetween(x, 'Slide', '.png')),...
-    trialdata(firstEvents(i):lastEvents(i),:), 'UniformOutput', false).';
+    sequences{i} = char(cellfun(@(x) cell2mat(extractBetween(x, '>', '</div>')),...
+    trialdata(firstEvents(i):lastEvents(i),:), 'UniformOutput', false).').';
 end
-
-alphabet = 'ABC';
-convertedSeqs = cell(size(sequences));
-% convert into ABC for further analysis
-for i = 1:length(sequences)
-    [~,~, uniquevals] = unique(sequences{i,:});
-    convertedSeqs{i} = char(alphabet(uniquevals));
-end
- 
-
 
 % get stimulus for sequence (remove whitespaces and convert to string)
-datatable.sequences = convertedSeqs;
+datatable.sequences = sequences;
 
 % get rt for key press on last element
 datatable.rt = cellfun(@(x) cell2mat(extractBetween(x, '"rt": ', ',')),...
     trialdata(lastEvents),'UniformOutput', false);
+
+% get info from predicting next item
+datatable.RTpredict = cellfun(@(x) cell2mat(extractBetween(x, '"rt": ', ',')),...
+    trialdata(lastEvents + 1), 'UniformOutput', false);
+
+datatable.predicted = cellfun(@(x) extractBetween(x, '{\"Q0\":\"', '\"}"'),...
+      trialdata(lastEvents + 1), 'UniformOutput', false);
+
+% check feedback
+datatable.correct = cellfun(@(x) contains(x, 'Correct'),...
+    trialdata(lastEvents + 2), 'UniformOutput', false);
 
 %% get subject and trial level info
 
@@ -67,8 +69,8 @@ passedBotCheck = cellfun(@(x) (contains(x, 'green') | contains(x, 'dot')) &...
 % keep only those that passed the check
 % datatable = datatable(datatable.passedCheck,:);
 
-datatable = datatable(cellfun(@length, datatable.sequences) < 28, :);
-datatable = datatable(cellfun(@length, datatable.sequences) > 3, :);
+datatable = datatable(cellfun(@length, datatable.sequences) ~= 29, :)
+datatable = datatable(cellfun(@length, datatable.sequences) > 2, :)
 
 
 save('Exp2_Results.mat', 'datatable')
